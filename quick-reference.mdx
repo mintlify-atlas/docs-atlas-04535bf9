@@ -1,0 +1,266 @@
+---
+title: Quick reference guide
+description: Bookmark this page for instant access during hackathons - free credits, starters, and emergency fixes.
+---
+
+<Tip>
+  Print this page or save it offline before your hackathon starts for quick access when you need it most.
+</Tip>
+
+## Must-have free credits
+
+Claim these credits before your hackathon begins. Many require verification that can take time.
+
+<CardGroup cols={2}>
+  <Card title="Vultr" icon="server" href="https://www.vultr.com/promo/try250">
+    **$250-300 for 30 days**
+    
+    High-performance cloud servers with global data centers
+  </Card>
+  
+  <Card title="Serper" icon="magnifying-glass" href="https://serper.dev/">
+    **2,500+ search queries**
+    
+    Lightning-fast Google Search API
+  </Card>
+  
+  <Card title="Twilio" icon="phone" href="https://www.twilio.com/en-us">
+    **1 phone number + $15**
+    
+    Calling, SMS, and OTP integration
+  </Card>
+  
+  <Card title="GitHub Student Pack" icon="graduation-cap" href="https://education.github.com/pack">
+    **Copilot + $100+ credits**
+    
+    Free developer tools and cloud credits
+  </Card>
+</CardGroup>
+
+## Copy-paste starters
+
+Get your project running in minutes with these starter templates.
+
+<Tabs>
+  <Tab title="FastAPI + React">
+    ```bash
+    # Backend
+    pip install fastapi uvicorn
+    uvicorn main:app --reload
+
+    # Frontend
+    npx create-react-app frontend
+    cd frontend && npm start
+    ```
+    
+    Minimal setup for building REST APIs with modern React frontend.
+  </Tab>
+  
+  <Tab title="Next.js T3 Stack">
+    ```bash
+    npm create t3-app@latest
+    cd my-app
+    npm run dev
+    ```
+    
+    Full-stack TypeScript with tRPC, Prisma, and Tailwind CSS pre-configured.
+  </Tab>
+  
+  <Tab title="Voice Agent">
+    ```bash
+    pip install livekit livekit-plugins-openai
+    python agent.py start
+    ```
+    
+    Real-time voice AI with LiveKit and OpenAI integration.
+  </Tab>
+</Tabs>
+
+## Environment variables template
+
+Copy this template and fill in your API keys. Keep your `.env` file secure and never commit it to git.
+
+```bash .env
+# Database
+DATABASE_URL=postgresql://user:pass@host:5432/db
+
+# AI APIs
+OPENAI_API_KEY=sk-...
+HUGGINGFACE_TOKEN=hf_...
+
+# Search & Data
+SERPER_API_KEY=...
+FIRECRAWL_API_KEY=fc-...
+
+# Communications
+TWILIO_ACCOUNT_SID=AC...
+TWILIO_AUTH_TOKEN=...
+TWILIO_PHONE_NUMBER=+1...
+
+# LiveKit
+LIVEKIT_API_KEY=...
+LIVEKIT_API_SECRET=...
+LIVEKIT_URL=wss://...
+
+# Deployment
+VERCEL_TOKEN=...
+```
+
+<Warning>
+  Add `.env` to your `.gitignore` file immediately after creating it to prevent accidentally committing secrets.
+</Warning>
+
+## Last-minute fixes
+
+When things go wrong minutes before demo time, these fixes can save you.
+
+<Accordion title="Deployment fails">
+  Use Ngrok to expose your localhost when deployment doesn't work:
+  
+  ```bash
+  ngrok http 3000
+  ```
+  
+  Give judges the ngrok URL instead. It's not ideal, but it works.
+</Accordion>
+
+<Accordion title="CORS issues">
+  <Tabs>
+    <Tab title="FastAPI">
+      ```python
+      from fastapi.middleware.cors import CORSMiddleware
+
+      app.add_middleware(
+          CORSMiddleware,
+          allow_origins=["*"],
+          allow_credentials=True,
+          allow_methods=["*"],
+          allow_headers=["*"],
+      )
+      ```
+    </Tab>
+    
+    <Tab title="Express">
+      ```javascript
+      const cors = require('cors');
+      app.use(cors());
+      ```
+    </Tab>
+  </Tabs>
+</Accordion>
+
+<Accordion title="Database connection issues">
+  Quick SQLite fallback when your database won't connect:
+  
+  ```python
+  import sqlite3
+  conn = sqlite3.connect('hackathon.db')
+  ```
+  
+  Not production-ready, but gets you through the demo.
+</Accordion>
+
+## Judging day checklist
+
+Use this checklist on presentation day to make sure you're ready.
+
+- [ ] Record backup demo video (use Loom)
+- [ ] Test on mobile devices
+- [ ] Prepare 3-minute pitch
+- [ ] Have localhost running (+ Ngrok ready as backup)
+- [ ] Print architecture diagram
+- [ ] List all APIs used (show free tiers)
+- [ ] Prepare GitHub repo link
+- [ ] Battery charged, charger ready
+
+## Pitch structure (3 minutes)
+
+Follow this proven structure for maximum impact with judges.
+
+<Steps>
+  <Step title="Hook + Problem (0:00-0:30)">
+    Start with a shocking statistic OR personal story. Explain why current solutions fail.
+  </Step>
+  
+  <Step title="Live Demo (0:30-2:00)">
+    Spend 60% of your time showing the core feature working. Handle edge cases gracefully.
+  </Step>
+  
+  <Step title="Tech Stack + Innovation (2:00-2:30)">
+    Highlight free/open-source tools you used. Mention any novel approaches you took.
+  </Step>
+  
+  <Step title="Business Model + Q&A (2:30-3:00)">
+    Explain how it scales and revenue potential. Take questions from judges.
+  </Step>
+</Steps>
+
+<Tip>
+  Judges remember demos, not slides. Spend most of your time showing your working product.
+</Tip>
+
+## Debug commands
+
+Common commands for fixing issues fast.
+
+<CodeGroup>
+```bash Port conflicts
+# Check what's using a port
+lsof -i :3000
+kill -9 <PID>
+```
+
+```bash Node.js issues
+# Reset node_modules
+rm -rf node_modules package-lock.json
+npm install
+```
+
+```bash Python cache
+# Clear Python cache
+find . -type d -name __pycache__ -exec rm -r {} +
+```
+
+```bash Git reset
+# Reset everything (CAREFUL!)
+git reset --hard HEAD
+git clean -fd
+```
+
+```bash Docker cleanup
+# Free up disk space
+docker system prune -a
+```
+</CodeGroup>
+
+<Warning>
+  The `git reset --hard` command permanently deletes uncommitted changes. Make sure you want to lose that work before running it.
+</Warning>
+
+## Resource limits
+
+Know these limits and backup plans before you hit them during your demo.
+
+| Service | Rate Limit | Action if Hit |
+|---------|------------|---------------|
+| OpenAI Free | 3 RPM | Use Hugging Face |
+| Serper | Depends on tier | Cache results |
+| Vercel | 100 GB bandwidth | Use Netlify |
+| Render Free | Sleeps after 15m | Keep-alive ping |
+
+<Note>
+  Cache API responses during development to avoid hitting rate limits. Most services count requests, not cached responses.
+</Note>
+
+## Emergency contacts
+
+Save these in your phone before the hackathon starts:
+
+- Teammate 1: [Phone]
+- Teammate 2: [Phone]
+- Faculty Mentor: [Phone]
+- Venue WiFi Password: [Password]
+
+<Tip>
+  Take a screenshot of the WiFi password and save it to your device. You'll thank yourself when the venue loses the paper with credentials.
+</Tip>

@@ -1,0 +1,243 @@
+---
+title: Frontend components and libraries
+description: Beautiful, animated, production-ready components to polish your UI quickly and make your hackathon project stand out.
+---
+
+Build stunning user interfaces with these battle-tested component libraries. Both options are copy-paste friendly, giving you full control to customize while saving hours of animation work.
+
+<CardGroup cols={2}>
+  <Card title="React Bits" icon="react" href="https://www.reactbits.dev/">
+    110+ animated React components with minimal dependencies
+  </Card>
+  <Card title="Aceternity UI" icon="sparkles" href="https://ui.aceternity.com/">
+    200+ free components with Tailwind CSS and Framer Motion
+  </Card>
+</CardGroup>
+
+## React Bits
+
+React Bits provides 110+ animated React components perfect for creating visually impactful portfolios and landing pages without reinventing animation logic.
+
+### Key features
+
+- **Text animations** - Typewriter effects, gradient animations, and dynamic text
+- **Particle backgrounds** - Interactive particle systems and visual effects
+- **Interactive effects** - Hover animations, scroll-triggered effects, and transitions
+- **Minimal dependencies** - Lightweight with extensive prop customization
+- **Full source access** - Modify and customize unlimited components
+
+### Available variants
+
+Choose the variant that matches your project setup:
+
+<CardGroup cols={2}>
+  <Card title="JavaScript + CSS" icon="js">
+    Pure JavaScript implementation with vanilla CSS
+  </Card>
+  <Card title="JavaScript + Tailwind" icon="wind">
+    JavaScript with Tailwind CSS utilities
+  </Card>
+  <Card title="TypeScript + CSS" icon="code">
+    Type-safe TypeScript with vanilla CSS
+  </Card>
+  <Card title="TypeScript + Tailwind" icon="bolt">
+    TypeScript with Tailwind CSS (recommended)
+  </Card>
+</CardGroup>
+
+### Pricing and license
+
+<Note>
+  React Bits is **free for commercial use** under the MIT license. Use it in hackathon projects, personal portfolios, or production applications without restrictions.
+</Note>
+
+### How to use
+
+<Steps>
+  <Step title="Browse components">
+    Visit [reactbits.dev](https://www.reactbits.dev/) and explore the component gallery.
+  </Step>
+  
+  <Step title="Select your variant">
+    Choose your preferred tech stack (JS/TS + CSS/Tailwind).
+  </Step>
+  
+  <Step title="Copy the code">
+    Copy the component code directly from the website.
+  </Step>
+  
+  <Step title="Paste and customize">
+    Add to your project and customize props to match your design.
+  </Step>
+</Steps>
+
+<Tip>
+  React Bits components work great for portfolios and landing pages that need to make a visual impact quickly. Perfect when judges need to see something impressive in the first 10 seconds.
+</Tip>
+
+## Aceternity UI
+
+Aceternity UI offers 200+ free copy-paste components built with modern tools like Tailwind CSS and Framer Motion. These components feature smooth transitions and professional animations that significantly improve user experience.
+
+### Key features
+
+- **Animated modals** - Dialog boxes with smooth enter/exit animations
+- **Expandable cards** - Interactive card components with expand effects
+- **3D effects** - Depth and parallax effects for modern UIs
+- **Smooth transitions** - Professional animations between states
+- **Highly customizable** - Modify any aspect despite being ready-made
+- **Tailwind CSS** - Utility-first styling for rapid customization
+- **Framer Motion** - Industry-standard animation library
+
+### Component categories
+
+<Accordion title="Hero sections">
+  Eye-catching landing page headers with animations, gradients, and call-to-action elements. Perfect for making strong first impressions.
+</Accordion>
+
+<Accordion title="Cards and grids">
+  Responsive card layouts with hover effects, expandable content, and grid systems. Great for showcasing features or portfolio items.
+</Accordion>
+
+<Accordion title="Navigation">
+  Animated navigation bars, sidebars, and menus with smooth transitions. Mobile-responsive by default.
+</Accordion>
+
+<Accordion title="Forms and inputs">
+  Styled form components with validation states, animations, and accessibility features.
+</Accordion>
+
+<Accordion title="Effects and backgrounds">
+  Particle effects, gradient animations, mesh backgrounds, and visual flourishes to enhance any page.
+</Accordion>
+
+### How to use
+
+<Steps>
+  <Step title="Install dependencies">
+    Ensure you have Tailwind CSS and Framer Motion installed in your project:
+    
+    ```bash
+    npm install tailwindcss framer-motion
+    ```
+  </Step>
+  
+  <Step title="Browse components">
+    Visit [ui.aceternity.com](https://ui.aceternity.com/) and find the component you need.
+  </Step>
+  
+  <Step title="Copy and paste">
+    Copy the component code directly into your project.
+  </Step>
+  
+  <Step title="Customize styling">
+    Modify Tailwind classes to match your design system.
+  </Step>
+</Steps>
+
+### Pricing
+
+<Note>
+  All Aceternity UI components are **completely free**. No premium tier, no hidden costs. Just copy, paste, and customize.
+</Note>
+
+## When to use what
+
+<CardGroup cols={2}>
+  <Card title="Use React Bits when..." icon="check">
+    - You need creative animations and visual effects
+    - Building portfolios or personal websites
+    - Want minimal dependencies
+    - Need full source code control
+  </Card>
+  
+  <Card title="Use Aceternity UI when..." icon="check">
+    - You want polished, professional components
+    - Already using Tailwind CSS and Framer Motion
+    - Need stunning visuals that judges will remember
+    - Want to save hours on CSS animation work
+  </Card>
+</CardGroup>
+
+## Best practices for hackathons
+
+<Warning>
+  **Don't reinvent the wheel** - Judges care about functionality and innovation, not whether you wrote every animation from scratch. Use these libraries to ship faster.
+</Warning>
+
+### Quick tips
+
+1. **Start with a template** - Pick a component and customize it rather than building from scratch
+2. **Test on mobile** - Both libraries are responsive, but always verify on actual devices
+3. **Keep it simple** - Don't over-animate. One or two standout effects > ten competing animations
+4. **Performance matters** - Test load times. Remove unused components before deploying
+5. **Accessibility first** - Ensure animations don't cause motion sickness (provide reduced motion options)
+
+### Component selection strategy
+
+<Accordion title="For landing pages">
+  Use Aceternity UI's hero sections and gradient backgrounds. Add React Bits text animations for headings.
+</Accordion>
+
+<Accordion title="For dashboards">
+  Use Aceternity UI cards and navigation. Keep animations subtle for better usability.
+</Accordion>
+
+<Accordion title="For portfolios">
+  Combine both! React Bits for creative effects, Aceternity UI for consistent layout components.
+</Accordion>
+
+<Accordion title="For demos">
+  Focus on Aceternity UI modals and expandable cards to showcase features interactively.
+</Accordion>
+
+## Example integration
+
+Here's how you might combine both libraries in a hackathon project:
+
+```jsx
+import { AnimatedCard } from './components/aceternity/AnimatedCard';
+import { TypewriterEffect } from './components/reactbits/TypewriterEffect';
+import { ParticleBackground } from './components/reactbits/ParticleBackground';
+
+function LandingPage() {
+  return (
+    <div className="relative min-h-screen">
+      {/* React Bits particle background */}
+      <ParticleBackground />
+      
+      <div className="relative z-10 container mx-auto px-4 py-20">
+        {/* React Bits text animation */}
+        <TypewriterEffect 
+          words={["Build", "Ship", "Win"]}
+          className="text-6xl font-bold"
+        />
+        
+        {/* Aceternity UI cards */}
+        <div className="grid grid-cols-3 gap-6 mt-12">
+          <AnimatedCard title="Feature 1">
+            Lightning-fast deployment
+          </AnimatedCard>
+          <AnimatedCard title="Feature 2">
+            AI-powered insights
+          </AnimatedCard>
+          <AnimatedCard title="Feature 3">
+            Real-time collaboration
+          </AnimatedCard>
+        </div>
+      </div>
+    </div>
+  );
+}
+```
+
+<Tip>
+  This combination gives you the best of both worlds: React Bits for eye-catching effects and Aceternity UI for consistent, professional components.
+</Tip>
+
+## Additional resources
+
+- [React Bits Documentation](https://www.reactbits.dev/) - Browse all 110+ components
+- [Aceternity UI Components](https://ui.aceternity.com/components) - Full component library
+- [Framer Motion Docs](https://www.framer.com/motion/) - Learn animation fundamentals
+- [Tailwind CSS Docs](https://tailwindcss.com/) - Master utility-first styling

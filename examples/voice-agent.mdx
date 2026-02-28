@@ -1,0 +1,459 @@
+---
+title: LiveKit voice agent
+description: Build real-time voice AI agents using LiveKit's voice pipeline with speech-to-text, LLM, and text-to-speech integration
+---
+
+## Overview
+
+LiveKit enables you to build real-time voice AI agents that can listen, think, and respond naturally. This example demonstrates a basic voice agent using LiveKit's voice pipeline, which seamlessly combines speech-to-text (Deepgram), language models (OpenAI), and text-to-speech (ElevenLabs).
+
+<Note>
+This example was tested in real hackathons for voice-based interview automation.
+</Note>
+
+## What you'll build
+
+A voice agent that:
+- Listens to user speech in real-time
+- Converts speech to text using Deepgram
+- Processes conversations with GPT-4
+- Responds with natural voice using ElevenLabs
+- Handles the complete audio pipeline automatically
+
+## Prerequisites
+
+Before you start, you'll need API keys and accounts for:
+
+<Steps>
+  <Step title="Set up LiveKit">
+    Sign up at [LiveKit Cloud](https://cloud.livekit.io) and get:
+    - API Key
+    - API Secret
+    - WebSocket URL
+  </Step>
+  
+  <Step title="Get provider API keys">
+    You'll need:
+    - [OpenAI API key](https://platform.openai.com) for the LLM
+    - [Deepgram API key](https://deepgram.com) for speech-to-text
+    - [ElevenLabs API key](https://elevenlabs.io) for text-to-speech
+  </Step>
+  
+  <Step title="Install LiveKit agents SDK">
+    ```bash
+    pip install livekit livekit-agents livekit-plugins-openai livekit-plugins-deepgram livekit-plugins-elevenlabs
+    ```
+  </Step>
+  
+  <Step title="Set environment variables">
+    ```bash
+    export LIVEKIT_API_KEY="your_api_key"
+    export LIVEKIT_API_SECRET="your_api_secret"
+    export LIVEKIT_URL="wss://your-instance.livekit.cloud"
+    export OPENAI_API_KEY="your_openai_key"
+    export DEEPGRAM_API_KEY="your_deepgram_key"
+    export ELEVENLABS_API_KEY="your_elevenlabs_key"
+    ```
+  </Step>
+</Steps>
+
+## Complete code
+
+Here's the full implementation of a basic voice agent:
+
+```python voice-agent-basic.py
+#!/usr/bin/env python
+"""
+Basic LiveKit Voice Agent Example
+Personal experience: Used in voice-based interview automation
+"""
+
+import asyncio
+import os
+from livekit import rtc
+from livekit.agents import JobContext, WorkerOptions, cli
+from livekit.agents.voice import VoicePipeline
+from livekit.plugins import openai, deepgram, elevenlabs
+
+async def entrypoint(ctx: JobContext):
+    """Main entry point for voice agent"""
+    
+    # Connect to the LiveKit room
+    await ctx.connect()
+    
+    # Initialize the voice pipeline
+    # This handles: Audio In -> STT -> LLM -> TTS -> Audio Out
+    pipeline = VoicePipeline(
+        stt=deepgram.STT(model="nova-2"),  # Speech-to-Text
+        llm=openai.LLM(
+            model="gpt-4-turbo",
+            temperature=0.7,
+            instructions="""You are a friendly voice assistant helping with
+            a product demo at a hackathon. Be concise and helpful.
+            Keep responses under 50 words."""
+        ),
+        tts=elevenlabs.TTS(
+            voice="Rachel",
+            model="eleven_turbo_v2"
+        ),
+    )
+    
+    # Start the pipeline
+    pipeline.start(ctx.room)
+    
+    print(f"Agent started in room: {ctx.room.name}")
+    
+    # Keep agent alive
+    await asyncio.sleep(3600)  # 1 hour max
+
+if __name__ == "__main__":
+    # Run with: python voice-agent-basic.py start
+    cli.run_app(
+        WorkerOptions(
+            entrypoint_fnc=entrypoint,
+            api_key=os.getenv("LIVEKIT_API_KEY"),
+            api_secret=os.getenv("LIVEKIT_API_SECRET"),
+            ws_url=os.getenv("LIVEKIT_URL"),
+        )
+    )
+```
+
+## How it works
+
+<Accordion title="1. Entry point and room connection">
+The `entrypoint()` function is called when a user joins a LiveKit room:
+
+```python
+async def entrypoint(ctx: JobContext):
+    await ctx.connect()
+```
+
+The `JobContext` provides access to the room and handles connection management.
+</Accordion>
+
+<Accordion title="2. Voice pipeline setup">
+The `VoicePipeline` orchestrates the entire audio flow:
+
+```
+User Audio → Deepgram (STT) → GPT-4 (LLM) → ElevenLabs (TTS) → Agent Audio
+```
+
+- **STT (Speech-to-Text)**: Deepgram's Nova-2 model converts user speech to text in real-time
+- **LLM (Language Model)**: GPT-4 Turbo processes the conversation and generates responses
+- **TTS (Text-to-Speech)**: ElevenLabs converts the LLM response back to natural voice
+
+All this happens automatically with minimal code!
+</Accordion>
+
+<Accordion title="3. LLM configuration">
+You can customize the agent's personality and behavior:
+
+```python
+llm=openai.LLM(
+    model="gpt-4-turbo",
+    temperature=0.7,  # Controls randomness (0-1)
+    instructions="""Your custom instructions here"""
+)
+```
+
+The instructions define how the agent should behave. Keep responses concise for better voice UX.
+</Accordion>
+
+<Accordion title="4. Voice selection">
+ElevenLabs offers various voices:
+
+```python
+tts=elevenlabs.TTS(
+    voice="Rachel",  # Try: Rachel, Drew, Clyde, Paul, etc.
+    model="eleven_turbo_v2"  # Faster, good for real-time
+)
+```
+
+Choose voices that match your use case. Preview them in the [ElevenLabs Voice Library](https://elevenlabs.io/voice-library).
+</Accordion>
+
+## Usage instructions
+
+<Steps>
+  <Step title="Start the agent">
+    ```bash
+    python voice-agent-basic.py start
+    ```
+    
+    The agent will start and wait for users to join rooms.
+  </Step>
+  
+  <Step title="Create a test room">
+    Use the LiveKit CLI or dashboard to create a room and get a join URL:
+    
+    ```bash
+    livekit-cli create-token \
+      --api-key $LIVEKIT_API_KEY \
+      --api-secret $LIVEKIT_API_SECRET \
+      --join --room my-room \
+      --identity user1
+    ```
+  </Step>
+  
+  <Step title="Join and test">
+    Open the join URL in your browser. The agent will automatically:
+    - Connect to the room
+    - Start listening for your voice
+    - Respond through audio
+    
+    Try saying: "Hello, can you help me with a demo?"
+  </Step>
+</Steps>
+
+## Customization examples
+
+<CodeGroup>
+```python Custom personality
+pipeline = VoicePipeline(
+    stt=deepgram.STT(model="nova-2"),
+    llm=openai.LLM(
+        model="gpt-4-turbo",
+        temperature=0.9,  # More creative
+        instructions="""You are a witty and energetic podcast host.
+        Use humor and keep the conversation engaging.
+        Ask follow-up questions to keep users talking."""
+    ),
+    tts=elevenlabs.TTS(
+        voice="Drew",  # Energetic male voice
+        model="eleven_turbo_v2"
+    ),
+)
+```
+
+```python Interview bot
+pipeline = VoicePipeline(
+    stt=deepgram.STT(model="nova-2"),
+    llm=openai.LLM(
+        model="gpt-4-turbo",
+        temperature=0.3,  # More focused
+        instructions="""You are conducting a technical interview.
+        Ask one question at a time about Python and web development.
+        Provide constructive feedback on answers.
+        Keep your responses under 40 words."""
+    ),
+    tts=elevenlabs.TTS(
+        voice="Rachel",
+        model="eleven_turbo_v2"
+    ),
+)
+```
+
+```python Multilingual support
+pipeline = VoicePipeline(
+    stt=deepgram.STT(
+        model="nova-2",
+        language="es"  # Spanish
+    ),
+    llm=openai.LLM(
+        model="gpt-4-turbo",
+        temperature=0.7,
+        instructions="""Eres un asistente amigable.
+        Responde en español de manera clara y concisa."""
+    ),
+    tts=elevenlabs.TTS(
+        voice="Pablo",  # Spanish voice
+        model="eleven_turbo_v2"
+    ),
+)
+```
+
+```python With function calling
+from livekit.agents import llm
+
+async def get_weather(location: str) -> str:
+    """Get current weather for a location"""
+    # Your weather API call here
+    return f"The weather in {location} is sunny, 72°F"
+
+pipeline = VoicePipeline(
+    stt=deepgram.STT(model="nova-2"),
+    llm=openai.LLM(
+        model="gpt-4-turbo",
+        temperature=0.7,
+        instructions="""You can check the weather for users.
+        When they ask about weather, use the get_weather function.""",
+        functions=[
+            llm.FunctionInfo(
+                name="get_weather",
+                description="Get current weather for a location",
+                parameters={
+                    "location": llm.Parameter(
+                        type="string",
+                        description="City name"
+                    )
+                },
+                callable=get_weather
+            )
+        ]
+    ),
+    tts=elevenlabs.TTS(voice="Rachel", model="eleven_turbo_v2"),
+)
+```
+</CodeGroup>
+
+## Use cases
+
+<CardGroup cols={2}>
+  <Card title="Voice interviews" icon="microphone">
+    Automate screening interviews with natural conversation flows
+  </Card>
+  
+  <Card title="Customer support" icon="headset">
+    Build voice assistants that handle support queries 24/7
+  </Card>
+  
+  <Card title="Virtual receptionists" icon="bell-concierge">
+    Create voice agents that greet visitors and route calls
+  </Card>
+  
+  <Card title="Language learning" icon="language">
+    Build conversation practice bots for language learners
+  </Card>
+  
+  <Card title="Accessibility tools" icon="universal-access">
+    Create voice interfaces for users with visual impairments
+  </Card>
+  
+  <Card title="Voice surveys" icon="clipboard-question">
+    Conduct engaging voice-based surveys and feedback collection
+  </Card>
+</CardGroup>
+
+<Tip>
+**Pro tip**: Set `temperature=0.3-0.5` for professional/formal agents and `0.7-0.9` for creative/casual agents. Lower temperature = more consistent responses.
+</Tip>
+
+<Warning>
+Voice calls can be expensive with per-minute charges from Deepgram and ElevenLabs. Monitor usage closely and implement timeouts to prevent runaway costs.
+</Warning>
+
+## Advanced features
+
+### Event handling
+
+You can listen to pipeline events for custom logic:
+
+```python
+async def entrypoint(ctx: JobContext):
+    await ctx.connect()
+    
+    pipeline = VoicePipeline(
+        stt=deepgram.STT(model="nova-2"),
+        llm=openai.LLM(model="gpt-4-turbo"),
+        tts=elevenlabs.TTS(voice="Rachel"),
+    )
+    
+    @pipeline.on("user_started_speaking")
+    def on_user_speech():
+        print("User started speaking")
+    
+    @pipeline.on("agent_started_speaking")
+    def on_agent_speech():
+        print("Agent started responding")
+    
+    @pipeline.on("function_call")
+    def on_function(call):
+        print(f"LLM called function: {call.name}")
+    
+    pipeline.start(ctx.room)
+    await asyncio.sleep(3600)
+```
+
+### Multi-participant rooms
+
+The agent can handle multiple users in the same room:
+
+```python
+async def entrypoint(ctx: JobContext):
+    await ctx.connect()
+    
+    pipeline = VoicePipeline(
+        stt=deepgram.STT(model="nova-2"),
+        llm=openai.LLM(
+            model="gpt-4-turbo",
+            instructions="""You are moderating a group discussion.
+            Address participants by name when they speak.
+            Facilitate turn-taking and keep conversation flowing."""
+        ),
+        tts=elevenlabs.TTS(voice="Rachel"),
+    )
+    
+    pipeline.start(ctx.room)
+    await asyncio.sleep(3600)
+```
+
+### Recording conversations
+
+Record voice interactions for analysis:
+
+```python
+from livekit import api
+
+async def entrypoint(ctx: JobContext):
+    await ctx.connect()
+    
+    # Start recording
+    recording_client = api.RecordingServiceClient(
+        api_key=os.getenv("LIVEKIT_API_KEY"),
+        api_secret=os.getenv("LIVEKIT_API_SECRET")
+    )
+    
+    await recording_client.start_recording(
+        room_name=ctx.room.name,
+        output_type="file"
+    )
+    
+    pipeline = VoicePipeline(
+        stt=deepgram.STT(model="nova-2"),
+        llm=openai.LLM(model="gpt-4-turbo"),
+        tts=elevenlabs.TTS(voice="Rachel"),
+    )
+    
+    pipeline.start(ctx.room)
+    await asyncio.sleep(3600)
+```
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Agent doesn't respond to speech">
+    - Verify all API keys are set correctly
+    - Check browser permissions for microphone access
+    - Ensure the agent started successfully (check console output)
+    - Try speaking louder or closer to the microphone
+  </Accordion>
+  
+  <Accordion title="High latency in responses">
+    - Use `eleven_turbo_v2` instead of `eleven_multilingual_v2` for TTS
+    - Switch to `gpt-3.5-turbo` for faster (but less capable) responses
+    - Check your network connection to LiveKit servers
+    - Consider using a LiveKit instance closer to your region
+  </Accordion>
+  
+  <Accordion title="ModuleNotFoundError for plugins">
+    Install the specific plugins:
+    ```bash
+    pip install livekit-plugins-openai
+    pip install livekit-plugins-deepgram
+    pip install livekit-plugins-elevenlabs
+    ```
+  </Accordion>
+  
+  <Accordion title="Unexpected charges">
+    - Set shorter timeout values (e.g., `await asyncio.sleep(300)` for 5 minutes)
+    - Implement usage monitoring in your code
+    - Use the free tiers: Deepgram (45K minutes), ElevenLabs (10K characters)
+    - Track API usage in respective dashboards
+  </Accordion>
+</AccordionGroup>
+
+## Next steps
+
+- Check out the [Voice & Communications resources](/resources/voice-comms) for more tools
+- Explore the [AI & ML resources](/resources/ai-ml) to enhance your agent's capabilities
+- Review the [Firecrawl RAG example](/examples/firecrawl-rag) to add knowledge bases to your agent

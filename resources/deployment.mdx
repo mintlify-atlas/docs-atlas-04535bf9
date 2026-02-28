@@ -1,0 +1,714 @@
+---
+title: Deployment and infrastructure
+description: Free hosting and VPS platforms to deploy your hackathon projects. From static sites to GPU workloads, get your demo live fast.
+---
+
+Deploy your hackathon project with these free hosting platforms and VPS credits. Whether you need a simple static site or GPU instances for ML models, these options have you covered.
+
+<CardGroup cols={2}>
+  <Card title="Vultr" icon="server" href="https://www.vultr.com/promo/try250">
+    $250-300 free cloud credits for 30 days
+  </Card>
+  <Card title="Quick Platforms" icon="rocket">
+    Vercel, Netlify, Render, Railway
+  </Card>
+</CardGroup>
+
+## Vultr
+
+Vultr offers $250-300 in free cloud credits for new users, making it perfect for running GPU instances, ML models, or heavy backend workloads during hackathons.
+
+### Key features
+
+- **Generous free credits** - $300 free for 30 days (new users only)
+- **High-performance SSD** - Fast cloud servers with NVMe storage
+- **Global data centers** - 25+ locations worldwide for low latency
+- **1-click applications** - Pre-configured Docker, WordPress, Minecraft, and more
+- **DDoS protection** - Included on all instances
+- **100% SLA uptime** - Reliable infrastructure
+- **Pay-as-you-go** - Only pay for what you use (after credits expire)
+
+### Pricing with free credits
+
+<Note>
+  **$300 free credits valid for 30 days** - More than enough for the entire hackathon plus deployment for demos.
+</Note>
+
+<Tabs>
+  <Tab title="Compute instances">
+    - **Regular Performance**: From $2.50/month (1 CPU, 512MB RAM)
+    - **High Performance**: From $6/month (1 CPU, 1GB RAM, NVMe SSD)
+    - **GPU instances**: From $90/month (NVIDIA A100 for ML workloads)
+    - **Optimized Cloud Compute**: Best price/performance ratio
+  </Tab>
+  
+  <Tab title="Storage">
+    - **Block Storage**: $1/month per 10GB
+    - **Object Storage**: $5/month for 250GB
+    - **Backups**: Automatic snapshots available
+  </Tab>
+  
+  <Tab title="Networking">
+    - **Bandwidth**: Free inbound, $0.01/GB outbound (generous limits)
+    - **Load Balancers**: $10/month
+    - **Reserved IPs**: $3/month per IP
+  </Tab>
+</Tabs>
+
+### How to claim free credits
+
+<Steps>
+  <Step title="Sign up with new email">
+    Create account at [vultr.com/promo/try250](https://www.vultr.com/promo/try250). **Must be a new account** - existing accounts are ineligible.
+  </Step>
+  
+  <Step title="Apply promo code">
+    Use promo code **`FLY300VULTR`** or **`250VULTRFLY`**. Credits may auto-apply or require manual entry in Billing → Promo Code.
+  </Step>
+  
+  <Step title="Verify account">
+    Add payment method for verification (required but won't be charged during credit period).
+  </Step>
+  
+  <Step title="Deploy immediately">
+    Credits are active instantly. Start deploying servers without upfront charges.
+  </Step>
+  
+  <Step title="Monitor usage">
+    Track credit balance in dashboard. Credits expire after 30 days.
+  </Step>
+</Steps>
+
+<Warning>
+  **Credits valid for 30 days only** - Plan your usage accordingly. Deploy early to leave time for debugging.
+</Warning>
+
+### Quick deployment guide
+
+Deploy a Docker application on Vultr:
+
+<CodeGroup>
+```bash Initial setup
+# 1. Create a new instance from Vultr dashboard
+# Choose: Ubuntu 22.04 LTS, $6/month instance
+
+# 2. SSH into your server
+ssh root@your-server-ip
+
+# 3. Update system
+apt update && apt upgrade -y
+```
+
+```bash Install Docker
+# Download Docker installation script
+curl -fsSL https://get.docker.com -o get-docker.sh
+
+# Run installation
+sh get-docker.sh
+
+# Verify installation
+docker --version
+
+# Install Docker Compose
+apt install docker-compose -y
+```
+
+```bash Deploy your app
+# Clone your project
+git clone https://github.com/your-username/your-project
+cd your-project
+
+# Build and run with Docker Compose
+docker-compose up -d
+
+# Check running containers
+docker ps
+
+# View logs
+docker-compose logs -f
+```
+
+```bash Configure firewall
+# Install UFW (Uncomplicated Firewall)
+apt install ufw -y
+
+# Allow SSH (important! Don't lock yourself out)
+ufw allow 22/tcp
+
+# Allow HTTP and HTTPS
+ufw allow 80/tcp
+ufw allow 443/tcp
+
+# Enable firewall
+ufw enable
+
+# Check status
+ufw status
+```
+</CodeGroup>
+
+### 1-click applications
+
+Vultr provides pre-configured images for quick deployment:
+
+<CardGroup cols={2}>
+  <Card title="Docker" icon="docker">
+    Pre-installed Docker and Docker Compose. Start deploying containers immediately.
+  </Card>
+  
+  <Card title="LEMP Stack" icon="code">
+    Linux, Nginx, MySQL, PHP. Perfect for web applications.
+  </Card>
+  
+  <Card title="Node.js" icon="node-js">
+    Pre-configured Node.js environment with npm and PM2.
+  </Card>
+  
+  <Card title="WordPress" icon="wordpress">
+    Fully configured WordPress with MySQL. Launch blogs in minutes.
+  </Card>
+</CardGroup>
+
+### Use cases
+
+<Accordion title="ML model hosting">
+  Deploy GPU instances ($90/month, covered by free credits) to run Stable Diffusion, LLM inference, or custom ML models that need CUDA.
+</Accordion>
+
+<Accordion title="Backend APIs">
+  Host Python/Node.js APIs, WebSocket servers, or microservices that need more resources than free tiers allow.
+</Accordion>
+
+<Accordion title="Database servers">
+  Run PostgreSQL, MongoDB, or Redis instances with dedicated resources for better performance.
+</Accordion>
+
+<Accordion title="Game servers">
+  Host Minecraft, CS:GO, or custom game servers with low latency and DDoS protection.
+</Accordion>
+
+<Tip>
+  **Generous credits** - $300 lets you run GPU instances or heavy workloads for the entire hackathon without cost worries.
+</Tip>
+
+## Quick deployment platforms
+
+For simpler deployments, these platforms offer instant hosting with generous free tiers:
+
+### Platform comparison
+
+| Platform | Best For | Free Tier | Deploy Time |
+|----------|----------|-----------|-------------|
+| **Vercel** | Next.js, React apps | Unlimited projects | ~2 minutes |
+| **Netlify** | Static sites, JAMstack | 100 GB bandwidth/month | ~2 minutes |
+| **Render** | Docker, Python, Node.js | 750 hours/month | ~5 minutes |
+| **Railway** | Any backend | $5 free credits/month | ~3 minutes |
+| **Vultr** | ML models, heavy compute | $250-300 credits (30 days) | ~10 minutes |
+
+### Vercel
+
+Perfect for Next.js and React applications with instant deployment from Git.
+
+<CardGroup cols={2}>
+  <Card title="Free tier" icon="gift">
+    - Unlimited projects
+    - 100 GB bandwidth
+    - Automatic HTTPS
+    - Edge functions
+  </Card>
+  
+  <Card title="Features" icon="sparkles">
+    - Git integration
+    - Preview deployments
+    - Zero configuration
+    - Global CDN
+  </Card>
+</CardGroup>
+
+**Quick deploy:**
+```bash
+npm install -g vercel
+vercel login
+vercel
+```
+
+### Netlify
+
+Excellent for static sites, SPAs, and JAMstack applications.
+
+<CardGroup cols={2}>
+  <Card title="Free tier" icon="gift">
+    - 100 GB bandwidth/month
+    - 300 build minutes/month
+    - Automatic HTTPS
+    - Forms & functions
+  </Card>
+  
+  <Card title="Features" icon="sparkles">
+    - Git-based workflows
+    - Split testing
+    - Deploy previews
+    - Custom domains
+  </Card>
+</CardGroup>
+
+**Quick deploy:**
+```bash
+npm install -g netlify-cli
+netlify login
+netlify deploy
+```
+
+### Render
+
+Great for backends, Docker containers, and databases.
+
+<CardGroup cols={2}>
+  <Card title="Free tier" icon="gift">
+    - 750 hours/month
+    - Static sites (unlimited)
+    - PostgreSQL database
+    - Redis (25 MB)
+  </Card>
+  
+  <Card title="Features" icon="sparkles">
+    - Auto-deploy from Git
+    - Zero-downtime deploys
+    - Custom domains
+    - Environment variables
+  </Card>
+</CardGroup>
+
+**Quick deploy:**
+```yaml
+# render.yaml
+services:
+  - type: web
+    name: my-app
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+```
+
+### Railway
+
+Simple platform for deploying any backend with $5 free credits monthly.
+
+<CardGroup cols={2}>
+  <Card title="Free tier" icon="gift">
+    - $5 credit/month
+    - All services supported
+    - PostgreSQL, MySQL, Redis
+    - No credit card required
+  </Card>
+  
+  <Card title="Features" icon="sparkles">
+    - One-click databases
+    - GitHub integration
+    - Environment variables
+    - Usage-based pricing
+  </Card>
+</CardGroup>
+
+**Quick deploy:**
+```bash
+npm i -g @railway/cli
+railway login
+railway init
+railway up
+```
+
+## Database hosting
+
+Free database options for your hackathon project:
+
+<Tabs>
+  <Tab title="Supabase">
+    **PostgreSQL + Real-time + Auth**
+    - 500 MB database
+    - Unlimited API requests
+    - Real-time subscriptions
+    - Built-in authentication
+    - Free tier forever
+  </Tab>
+  
+  <Tab title="Neon">
+    **Serverless PostgreSQL**
+    - 3 GB storage
+    - Instant branching
+    - Auto-scaling
+    - Cold start optimization
+    - Free tier included
+  </Tab>
+  
+  <Tab title="MongoDB Atlas">
+    **NoSQL Database**
+    - 512 MB storage
+    - Shared cluster
+    - 3 regions available
+    - Change streams
+    - Free tier forever
+  </Tab>
+  
+  <Tab title="PlanetScale">
+    **MySQL Compatible**
+    - 5 GB storage
+    - 1 billion row reads/month
+    - Branching workflows
+    - Zero-downtime schema changes
+    - Free tier included
+  </Tab>
+</Tabs>
+
+## Emergency deployment: Ngrok
+
+When nothing else works, use Ngrok to tunnel localhost to a public URL.
+
+<Warning>
+  **Last resort only** - Ngrok is not production-ready. Your computer must stay on. Use only if deployment fails and demo is in 20 minutes.
+</Warning>
+
+### Quick start
+
+<Steps>
+  <Step title="Install Ngrok">
+    Download from [ngrok.com](https://ngrok.com/) or:
+    ```bash
+    # macOS
+    brew install ngrok
+    
+    # Linux
+    curl -s https://ngrok-agent.s3.amazonaws.com/ngrok.asc | sudo tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null
+    echo "deb https://ngrok-agent.s3.amazonaws.com buster main" | sudo tee /etc/apt/sources.list.d/ngrok.list
+    sudo apt update && sudo apt install ngrok
+    ```
+  </Step>
+  
+  <Step title="Sign up and authenticate">
+    Create free account at ngrok.com and run:
+    ```bash
+    ngrok authtoken YOUR_AUTH_TOKEN
+    ```
+  </Step>
+  
+  <Step title="Tunnel your app">
+    If your app runs on localhost:3000:
+    ```bash
+    ngrok http 3000
+    ```
+    
+    You'll get a public URL like: `https://abc123.ngrok.io`
+  </Step>
+</Steps>
+
+**Free tier limits:**
+- 1 online ngrok process
+- 4 tunnels/ngrok process
+- 40 connections/minute
+- Random URLs (or 1 custom domain)
+
+## Best practices for hackathons
+
+### Deployment timeline
+
+<Steps>
+  <Step title="2 hours before deadline">
+    **Deploy your MVP** - Even if features are incomplete, get something live.
+  </Step>
+  
+  <Step title="1 hour before deadline">
+    **Test thoroughly** - Check on mobile, different browsers, different networks.
+  </Step>
+  
+  <Step title="30 minutes before deadline">
+    **Record backup video** - Use Loom to record a demo. If live site fails, you have this.
+  </Step>
+  
+  <Step title="During presentation">
+    **Have fallbacks ready** - Screenshots, video, local version on laptop.
+  </Step>
+</Steps>
+
+### Pre-deployment checklist
+
+<Accordion title="Environment variables">
+  - [ ] All API keys stored in environment variables (not hardcoded)
+  - [ ] `.env` file in `.gitignore`
+  - [ ] Environment variables configured on hosting platform
+  - [ ] Database connection strings updated for production
+</Accordion>
+
+<Accordion title="Security">
+  - [ ] HTTPS enabled (automatic on Vercel/Netlify/Render)
+  - [ ] CORS configured properly
+  - [ ] Rate limiting on API endpoints
+  - [ ] No sensitive data in client-side code
+  - [ ] API keys have restricted permissions
+</Accordion>
+
+<Accordion title="Performance">
+  - [ ] Static assets optimized (images compressed)
+  - [ ] CDN configured for static files
+  - [ ] Database queries optimized
+  - [ ] Loading states for slow operations
+  - [ ] Error boundaries for React apps
+</Accordion>
+
+<Accordion title="Testing">
+  - [ ] Test on mobile devices
+  - [ ] Test on different browsers (Chrome, Safari, Firefox)
+  - [ ] Test on different networks (WiFi, mobile data)
+  - [ ] All critical user flows work
+  - [ ] Forms submit successfully
+</Accordion>
+
+### Environment variables best practices
+
+**Never commit sensitive data:**
+
+```bash
+# .gitignore
+.env
+.env.local
+.env.*.local
+*.key
+*.pem
+credentials.json
+```
+
+**Organize by environment:**
+
+```bash
+# .env.example (commit this)
+DATABASE_URL=postgresql://user:pass@host:5432/db
+OPENAI_API_KEY=sk-...
+TWILIO_ACCOUNT_SID=AC...
+TWILIO_AUTH_TOKEN=...
+NEXT_PUBLIC_API_URL=https://api.example.com
+```
+
+**Use platform-specific methods:**
+
+<CodeGroup>
+```bash Vercel
+# Install Vercel CLI
+vercel env add OPENAI_API_KEY
+
+# Or use dashboard: Settings → Environment Variables
+```
+
+```bash Netlify
+# netlify.toml
+[build.environment]
+  NODE_VERSION = "18"
+
+# Or use dashboard: Site settings → Environment variables
+```
+
+```bash Render
+# Dashboard: Environment → Environment Variables
+# Add each key-value pair manually
+```
+
+```bash Railway
+# CLI
+railway variables set OPENAI_API_KEY=sk-...
+
+# Or use dashboard: Variables tab
+```
+</CodeGroup>
+
+### Custom domains (optional)
+
+<Tip>
+  **GitHub Student Pack** - Free .tech domain and other perks. Apply at [education.github.com](https://education.github.com/pack)
+</Tip>
+
+Add custom domain to make your project more professional:
+
+1. **Get a domain** - Namecheap, Google Domains, or free via GitHub Student Pack
+2. **Configure DNS** - Point to your hosting platform (instructions in platform docs)
+3. **Enable HTTPS** - Automatic on most platforms
+4. **Update environment variables** - Change API URLs to use new domain
+
+## Choosing the right platform
+
+<CardGroup cols={2}>
+  <Card title="Static frontend only" icon="browser">
+    **Use Vercel or Netlify**
+    - Instant deploys
+    - Global CDN
+    - Zero configuration
+    - Free HTTPS
+  </Card>
+  
+  <Card title="Backend API" icon="server">
+    **Use Render or Railway**
+    - Docker support
+    - Database add-ons
+    - Environment variables
+    - Auto-scaling
+  </Card>
+  
+  <Card title="Full-stack app" icon="layer-group">
+    **Use Vercel (Next.js) or Render**
+    - Frontend + API routes
+    - Serverless functions
+    - Easy deployment
+    - Good free tier
+  </Card>
+  
+  <Card title="ML models / GPU workloads" icon="brain">
+    **Use Vultr**
+    - GPU instances available
+    - $300 free credits
+    - Full control
+    - Custom setup
+  </Card>
+</CardGroup>
+
+## Example deployment workflows
+
+### Next.js on Vercel
+
+```bash
+# 1. Install Vercel CLI
+npm install -g vercel
+
+# 2. Login
+vercel login
+
+# 3. Deploy (from project directory)
+vercel
+
+# 4. Deploy to production
+vercel --prod
+```
+
+### Flask API on Render
+
+```yaml
+# render.yaml
+services:
+  - type: web
+    name: flask-api
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: DATABASE_URL
+        fromDatabase:
+          name: postgres
+          property: connectionString
+
+databases:
+  - name: postgres
+    plan: free
+```
+
+### Docker on Vultr
+
+```bash
+# After SSH into Vultr instance
+
+# 1. Install Docker
+curl -fsSL https://get.docker.com -o get-docker.sh
+sh get-docker.sh
+
+# 2. Clone and deploy
+git clone https://github.com/username/project
+cd project
+
+# 3. Run with Docker Compose
+docker-compose up -d
+
+# 4. Check logs
+docker-compose logs -f
+```
+
+## Monitoring and debugging
+
+<Warning>
+  **Monitor your deployment** - Don't just deploy and walk away. Check logs for errors.
+</Warning>
+
+### Check deployment status
+
+<CodeGroup>
+```bash Vercel
+# View deployment logs
+vercel logs
+
+# Check build status
+vercel inspect
+```
+
+```bash Render
+# View logs in dashboard
+# Or use API:
+curl https://api.render.com/v1/services/SERVICE_ID/logs
+```
+
+```bash Railway
+# View logs
+railway logs
+
+# Check status
+railway status
+```
+
+```bash Vultr
+# SSH and check logs
+ssh root@your-ip
+docker-compose logs -f
+
+# Check running containers
+docker ps
+```
+</CodeGroup>
+
+### Common issues and fixes
+
+<Accordion title="Build fails">
+  **Symptoms**: Deployment fails during build step
+  
+  **Fixes**:
+  - Check build logs for specific errors
+  - Verify Node.js/Python version matches local
+  - Ensure all dependencies in package.json/requirements.txt
+  - Check for missing environment variables
+</Accordion>
+
+<Accordion title="App doesn't start">
+  **Symptoms**: Build succeeds but app won't start
+  
+  **Fixes**:
+  - Verify start command is correct
+  - Check PORT environment variable usage
+  - Look for runtime errors in logs
+  - Ensure database connections are configured
+</Accordion>
+
+<Accordion title="API calls fail">
+  **Symptoms**: Frontend loads but API requests fail
+  
+  **Fixes**:
+  - Check CORS configuration
+  - Verify API URL in frontend code
+  - Ensure environment variables are set
+  - Check network tab in browser DevTools
+</Accordion>
+
+<Accordion title="Slow loading">
+  **Symptoms**: Site loads but very slowly
+  
+  **Fixes**:
+  - Optimize images (use next/image or lazy loading)
+  - Enable CDN for static assets
+  - Minimize bundle size
+  - Use production builds (not development)
+</Accordion>
+
+With these deployment options and best practices, you'll get your hackathon project live reliably and quickly!

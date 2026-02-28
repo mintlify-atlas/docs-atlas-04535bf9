@@ -1,0 +1,686 @@
+---
+title: Voice AI and communications
+description: Build real-time voice agents and integrate calling functionality with these battle-tested platforms for voice-first applications.
+---
+
+Create production-ready voice AI applications with complete STT-LLM-TTS pipelines and calling integrations. These tools handle the hard parts of real-time audio so you can focus on the experience.
+
+<CardGroup cols={2}>
+  <Card title="LiveKit" icon="microphone" href="https://livekit.io/">
+    Open-source real-time voice AI framework
+  </Card>
+  <Card title="Twilio" icon="phone" href="https://www.twilio.com/en-us">
+    Calling, SMS, and OTP integration
+  </Card>
+</CardGroup>
+
+## LiveKit
+
+LiveKit is an open-source WebRTC framework for building real-time voice AI applications. It provides a complete STT-LLM-TTS pipeline with turn detection and interruption handling - the industry standard for voice-first applications.
+
+### Key features
+
+- **Complete voice pipeline** - STT → LLM → TTS with seamless integration
+- **WebRTC-based streaming** - Real-time, low-latency audio/video
+- **Turn detection** - Automatically detects when users stop speaking
+- **Interruption handling** - Users can interrupt the AI mid-response
+- **Multi-participant rooms** - Multiple users can join the same session
+- **Provider plugins** - OpenAI, AssemblyAI, Deepgram, ElevenLabs, and more
+- **Python & JavaScript SDKs** - Build agents in your preferred language
+- **Self-hosted or cloud** - Deploy anywhere
+
+### Architecture overview
+
+LiveKit uses a room-based architecture where both users and AI agents join as participants:
+
+```
+┌─────────────┐         ┌──────────────┐
+│   Browser   │◄───────►│  LiveKit     │
+│   (User)    │  WebRTC │  Room        │
+└─────────────┘         └──────┬───────┘
+                               │
+                        ┌──────▼───────┐
+                        │  Python      │
+                        │  Agent       │
+                        │  (STT→LLM    │
+                        │   →TTS)      │
+                        └──────────────┘
+```
+
+<Steps>
+  <Step title="User joins LiveKit room">
+    Browser or mobile app connects to LiveKit room via WebRTC.
+  </Step>
+  
+  <Step title="Python agent joins same room">
+    Agent joins as a participant with audio capabilities.
+  </Step>
+  
+  <Step title="Audio streams bidirectionally">
+    User speech streams to agent, agent responses stream back.
+  </Step>
+  
+  <Step title="Agent processes in real-time">
+    STT converts speech to text, LLM generates response, TTS converts to audio.
+  </Step>
+  
+  <Step title="Events sync UI instantly">
+    Structured events (transcripts, responses) update the interface in real-time.
+  </Step>
+</Steps>
+
+### Provider plugins
+
+LiveKit supports plugins for major AI providers:
+
+<Tabs>
+  <Tab title="Speech-to-Text">
+    - **Deepgram** - Fast, accurate transcription
+    - **AssemblyAI** - High accuracy with punctuation
+    - **OpenAI Whisper** - Open-source option
+    - **Google Cloud Speech** - 120+ languages
+    - **Azure Speech** - Enterprise support
+  </Tab>
+  
+  <Tab title="Language Models">
+    - **OpenAI** - GPT-3.5, GPT-4, GPT-4o
+    - **Anthropic** - Claude Sonnet, Opus
+    - **Google** - Gemini Pro, Ultra
+    - **Local models** - Ollama, LM Studio
+    - **Custom APIs** - Any HTTP endpoint
+  </Tab>
+  
+  <Tab title="Text-to-Speech">
+    - **ElevenLabs** - Ultra-realistic voices
+    - **OpenAI TTS** - Natural-sounding speech
+    - **Azure TTS** - Neural voices
+    - **Google Cloud TTS** - WaveNet voices
+    - **Deepgram** - Low-latency synthesis
+  </Tab>
+</Tabs>
+
+### Quick start
+
+Install the LiveKit agents SDK:
+
+```bash
+pip install livekit livekit-agents livekit-plugins-openai livekit-plugins-deepgram livekit-plugins-elevenlabs
+```
+
+### Basic agent example
+
+<CodeGroup>
+```python Simple voice agent
+import asyncio
+from livekit import rtc
+from livekit.agents import JobContext, WorkerOptions, cli
+from livekit.agents.voice import VoicePipeline
+from livekit.plugins import openai, deepgram, elevenlabs
+
+async def entrypoint(ctx: JobContext):
+    # Connect to the room
+    await ctx.connect()
+    
+    # Create voice pipeline
+    pipeline = VoicePipeline(
+        stt=deepgram.STT(),
+        llm=openai.LLM(model="gpt-4"),
+        tts=elevenlabs.TTS(voice="Rachel"),
+    )
+    
+    # Start the pipeline
+    pipeline.start(ctx.room)
+    
+    # Keep the agent alive
+    await asyncio.sleep(3600)
+
+if __name__ == "__main__":
+    cli.run_app(WorkerOptions(entrypoint_fnc=entrypoint))
+```
+
+```python Custom instructions
+async def entrypoint(ctx: JobContext):
+    await ctx.connect()
+    
+    # Create LLM with custom instructions
+    llm = openai.LLM(
+        model="gpt-4",
+        temperature=0.7,
+        instructions="""
+        You are a helpful customer service agent for a tech company.
+        Be friendly, concise, and professional.
+        If you don't know something, admit it and offer to escalate.
+        """
+    )
+    
+    pipeline = VoicePipeline(
+        stt=deepgram.STT(language="en-US"),
+        llm=llm,
+        tts=elevenlabs.TTS(
+            voice="Rachel",
+            model="eleven_turbo_v2"  # Faster, lower latency
+        )
+    )
+    
+    pipeline.start(ctx.room)
+    await asyncio.sleep(3600)
+```
+
+```python Handle events
+from livekit.agents.voice import VoiceEventType
+
+async def entrypoint(ctx: JobContext):
+    await ctx.connect()
+    
+    pipeline = VoicePipeline(
+        stt=deepgram.STT(),
+        llm=openai.LLM(model="gpt-4"),
+        tts=elevenlabs.TTS(voice="Rachel")
+    )
+    
+    # Handle transcription events
+    @pipeline.on(VoiceEventType.USER_SPEECH_COMMITTED)
+    def on_user_speech(transcript: str):
+        print(f"User said: {transcript}")
+    
+    # Handle agent responses
+    @pipeline.on(VoiceEventType.AGENT_SPEECH_COMMITTED)
+    def on_agent_speech(text: str):
+        print(f"Agent said: {text}")
+    
+    pipeline.start(ctx.room)
+    await asyncio.sleep(3600)
+```
+
+```python Multi-language support
+async def entrypoint(ctx: JobContext):
+    await ctx.connect()
+    
+    # Spanish-language agent
+    pipeline = VoicePipeline(
+        stt=deepgram.STT(language="es"),  # Spanish STT
+        llm=openai.LLM(
+            model="gpt-4",
+            instructions="Responde siempre en español. Eres un asistente útil."
+        ),
+        tts=elevenlabs.TTS(
+            voice="Diego",  # Spanish voice
+            model="eleven_multilingual_v2"
+        )
+    )
+    
+    pipeline.start(ctx.room)
+    await asyncio.sleep(3600)
+```
+</CodeGroup>
+
+### Advanced features
+
+<Accordion title="Turn detection and interruption">
+  LiveKit automatically detects when users stop speaking (turn detection) and allows users to interrupt the AI mid-response. No manual configuration needed - it just works.
+</Accordion>
+
+<Accordion title="Function calling / Tools">
+  Give your agent abilities like database lookups, API calls, or calculations:
+  
+  ```python
+  from livekit.agents import llm
+  
+  # Define a tool
+  @llm.ai_callable()
+  def get_weather(location: str) -> str:
+      """Get the current weather for a location."""
+      # Call weather API
+      return f"The weather in {location} is sunny, 72°F."
+  
+  # Add to LLM
+  llm_instance = openai.LLM(
+      model="gpt-4",
+      functions=[get_weather]
+  )
+  ```
+</Accordion>
+
+<Accordion title="Multi-participant rooms">
+  Multiple users can join the same room and talk to the same agent, or multiple agents can be in one room. Perfect for group conversations or agent collaboration.
+</Accordion>
+
+<Accordion title="Structured data sync">
+  Send structured data (JSON) from agent to frontend for real-time UI updates:
+  
+  ```python
+  # Send custom data to room
+  await ctx.room.local_participant.publish_data(
+      json.dumps({"event": "booking_confirmed", "id": "12345"}),
+      topic="app_events"
+  )
+  ```
+</Accordion>
+
+### Use cases
+
+<CardGroup cols={2}>
+  <Card title="Customer service bots" icon="headset">
+    Handle support calls with AI agents that can look up orders, process refunds, or escalate to humans.
+  </Card>
+  
+  <Card title="Interview automation" icon="clipboard-question">
+    Conduct initial screening interviews, collect candidate information, and schedule follow-ups.
+  </Card>
+  
+  <Card title="Voice ordering" icon="cart-shopping">
+    Take orders over the phone for restaurants, retail, or services with natural conversation.
+  </Card>
+  
+  <Card title="Real-time transcription" icon="closed-captioning">
+    Live captioning for meetings, lectures, or accessibility features.
+  </Card>
+</CardGroup>
+
+<Tip>
+  **Industry-standard for voice AI** - Used in production by companies building voice-first applications. Handles all the hard parts of real-time audio.
+</Tip>
+
+## Twilio
+
+Twilio provides APIs for calling, SMS, WhatsApp, and OTP verification. With a free tier offering 1 phone number and $15 credits, it's perfect for adding telephony to your hackathon project.
+
+### Key features
+
+- **Free tier** - 1 free phone number + $15 credits for new accounts
+- **Test credentials** - Development mode without charges
+- **Voice calling** - Inbound and outbound phone calls
+- **SMS messaging** - Send and receive text messages
+- **WhatsApp** - Integrate WhatsApp messaging
+- **OTP verification** - Phone number verification codes
+- **LiveKit integration** - Connect calls to voice agents seamlessly
+
+### Pricing
+
+<CardGroup cols={2}>
+  <Card title="Free tier" icon="gift">
+    - **1 free phone number**
+    - **$15 trial credits**
+    - Test credentials for development
+    - Enough for entire hackathon
+  </Card>
+  
+  <Card title="Pay-as-you-go" icon="dollar-sign">
+    - Voice: ~$0.013/min
+    - SMS: ~$0.0075/message
+    - Phone numbers: $1/month
+    - No monthly minimums
+  </Card>
+</CardGroup>
+
+### Quick start
+
+Install the Twilio SDK:
+
+```bash
+pip install twilio
+```
+
+### Code examples
+
+<CodeGroup>
+```python Make a call
+from twilio.rest import Client
+
+client = Client(account_sid, auth_token)
+
+call = client.calls.create(
+    to="+1234567890",
+    from_="+0987654321",
+    url="http://your-webhook.com/voice",  # TwiML instructions
+    method="POST"
+)
+
+print(f"Call SID: {call.sid}")
+print(f"Status: {call.status}")
+```
+
+```python Send SMS
+from twilio.rest import Client
+
+client = Client(account_sid, auth_token)
+
+message = client.messages.create(
+    to="+1234567890",
+    from_="+0987654321",
+    body="Your verification code is 123456"
+)
+
+print(f"Message SID: {message.sid}")
+```
+
+```python TwiML response
+from flask import Flask, request
+from twilio.twiml.voice_response import VoiceResponse
+
+app = Flask(__name__)
+
+@app.route("/voice", methods=['POST'])
+def voice():
+    response = VoiceResponse()
+    response.say("Hello! Welcome to our service.")
+    response.pause(length=1)
+    response.say("Press 1 for sales, press 2 for support.")
+    response.gather(num_digits=1, action="/handle-key")
+    
+    return str(response)
+
+@app.route("/handle-key", methods=['POST'])
+def handle_key():
+    digit = request.values.get('Digits', '')
+    response = VoiceResponse()
+    
+    if digit == '1':
+        response.say("Connecting you to sales.")
+    elif digit == '2':
+        response.say("Connecting you to support.")
+    
+    return str(response)
+```
+
+```python OTP verification
+from twilio.rest import Client
+
+client = Client(account_sid, auth_token)
+
+# Create verification service (one-time setup)
+service = client.verify.v2.services.create(
+    friendly_name="My App Verification"
+)
+
+# Send OTP
+verification = client.verify.v2.services(
+    service.sid
+).verifications.create(
+    to="+1234567890",
+    channel="sms"
+)
+
+print(f"Verification sent: {verification.status}")
+
+# Check OTP
+verification_check = client.verify.v2.services(
+    service.sid
+).verification_checks.create(
+    to="+1234567890",
+    code="123456"  # User-entered code
+)
+
+print(f"Valid: {verification_check.status == 'approved'}")
+```
+</CodeGroup>
+
+### Integrate Twilio with LiveKit
+
+Connect phone calls to your LiveKit voice agents:
+
+<Steps>
+  <Step title="Twilio receives call">
+    User calls your Twilio phone number.
+  </Step>
+  
+  <Step title="Webhook creates LiveKit room">
+    Your server creates a new LiveKit room and generates join token.
+  </Step>
+  
+  <Step title="Connect caller to LiveKit">
+    Use TwiML `<Stream>` to send audio from Twilio to LiveKit.
+  </Step>
+  
+  <Step title="Agent joins room">
+    Your LiveKit agent joins the same room as the caller.
+  </Step>
+  
+  <Step title="Bidirectional audio">
+    Audio streams between caller and agent in real-time.
+  </Step>
+</Steps>
+
+<CodeGroup>
+```python Twilio → LiveKit webhook
+from flask import Flask, request
+from twilio.twiml.voice_response import VoiceResponse, Connect, Stream
+from livekit import api
+import os
+
+app = Flask(__name__)
+
+@app.route("/voice", methods=['POST'])
+def voice():
+    # Create LiveKit room and token
+    room_name = f"call-{request.values.get('CallSid')}"
+    
+    # Generate token for the caller
+    token = api.AccessToken(
+        os.environ['LIVEKIT_API_KEY'],
+        os.environ['LIVEKIT_API_SECRET']
+    )
+    token.with_identity(request.values.get('From'))
+    token.with_grants(api.VideoGrants(
+        room_join=True,
+        room=room_name
+    ))
+    
+    # Create TwiML response
+    response = VoiceResponse()
+    response.say("Connecting you to our AI assistant.")
+    
+    # Stream audio to LiveKit
+    connect = Connect()
+    stream = Stream(
+        url=f"wss://your-livekit-server.com?token={token.to_jwt()}"
+    )
+    connect.append(stream)
+    response.append(connect)
+    
+    return str(response)
+```
+
+```python Start LiveKit agent for call
+import asyncio
+from livekit import rtc
+from livekit.agents import JobContext
+from livekit.agents.voice import VoicePipeline
+
+async def handle_twilio_call(call_sid: str):
+    room_name = f"call-{call_sid}"
+    
+    # Connect to room
+    room = rtc.Room()
+    await room.connect(
+        url=os.environ['LIVEKIT_URL'],
+        token=generate_token(room_name)
+    )
+    
+    # Create voice pipeline
+    pipeline = VoicePipeline(
+        stt=deepgram.STT(),
+        llm=openai.LLM(
+            model="gpt-4",
+            instructions="You are a helpful phone assistant."
+        ),
+        tts=elevenlabs.TTS(voice="Rachel")
+    )
+    
+    pipeline.start(room)
+    
+    # Handle call until disconnected
+    await asyncio.sleep(600)  # 10 min max
+```
+</CodeGroup>
+
+### Use cases
+
+<Accordion title="Voice agent hotline">
+  Set up a phone number that connects callers to your LiveKit voice agent. Perfect for customer support, order taking, or appointment scheduling.
+</Accordion>
+
+<Accordion title="SMS notifications">
+  Send alerts, confirmations, or updates to users via text message. Great for delivery updates, appointment reminders, or emergency alerts.
+</Accordion>
+
+<Accordion title="Phone verification">
+  Verify user phone numbers with OTP codes. Essential for security-critical apps or preventing fake accounts.
+</Accordion>
+
+<Accordion title="WhatsApp integration">
+  Build chatbots or send notifications through WhatsApp Business API. Higher engagement than email for many demographics.
+</Accordion>
+
+<Warning>
+  **Free credits are enough** - $15 credits last the entire hackathon. Test extensively without worrying about costs.
+</Warning>
+
+## Best practices
+
+### Voice agent design
+
+<Tip>
+  **Keep responses concise** - Voice UIs are different from text. Aim for 1-2 sentence responses. Users can't scroll back.
+</Tip>
+
+1. **Design for interruption** - Users should be able to interrupt the agent naturally
+2. **Provide escape hatches** - Always offer "say 'operator' to speak to a human"
+3. **Use conversation markers** - "Got it", "One moment", "Let me check that"
+4. **Avoid long monologues** - Break information into chunks with confirmations
+5. **Test latency** - Aim for under 1 second response time or users get frustrated
+
+### Production deployment
+
+<Steps>
+  <Step title="Monitor latency">
+    Track STT, LLM, and TTS latency separately. Optimize the slowest component.
+  </Step>
+  
+  <Step title="Handle errors gracefully">
+    "Sorry, I didn't catch that" is better than silence or errors.
+  </Step>
+  
+  <Step title="Log conversations">
+    Store transcripts for debugging and improving prompts.
+  </Step>
+  
+  <Step title="Implement fallbacks">
+    If agent fails, transfer to human or offer callback.
+  </Step>
+  
+  <Step title="Test edge cases">
+    Background noise, accents, interruptions, silence.
+  </Step>
+</Steps>
+
+### Cost optimization
+
+<CardGroup cols={2}>
+  <Card title="Development" icon="code">
+    - Use Twilio test credentials
+    - LiveKit self-hosted (free)
+    - Free STT: OpenAI Whisper
+    - Free LLM: Local models
+  </Card>
+  
+  <Card title="Demo day" icon="presentation-screen">
+    - Use trial credits
+    - Cache common responses
+    - Set call time limits
+    - Monitor usage in real-time
+  </Card>
+</CardGroup>
+
+### Latency optimization
+
+<Note>
+  **Target: Under 1 second end-to-end latency** - From user finishing speech to agent starting response.
+</Note>
+
+- **STT**: Deepgram or AssemblyAI (fastest options)
+- **LLM**: GPT-3.5-turbo or Claude Instant (fast, good quality)
+- **TTS**: ElevenLabs Turbo v2 or OpenAI TTS-1 (lowest latency)
+- **Streaming**: Enable streaming for all components when possible
+
+## Example: Complete voice agent
+
+Put it all together - Twilio phone number connected to LiveKit agent:
+
+```python
+# app.py - Flask webhook server
+from flask import Flask, request
+from twilio.twiml.voice_response import VoiceResponse, Connect, Stream
+import os
+
+app = Flask(__name__)
+
+@app.route("/voice", methods=['POST'])
+def voice():
+    """Handle incoming Twilio calls"""
+    call_sid = request.values.get('CallSid')
+    caller = request.values.get('From')
+    
+    response = VoiceResponse()
+    response.say(
+        "Thank you for calling. Connecting you to our AI assistant.",
+        voice="Polly.Joanna"
+    )
+    
+    # Stream audio to LiveKit
+    connect = Connect()
+    stream = Stream(
+        url=f"wss://your-livekit.com?room=call-{call_sid}&caller={caller}"
+    )
+    connect.append(stream)
+    response.append(connect)
+    
+    return str(response)
+
+if __name__ == "__main__":
+    app.run(port=5000)
+```
+
+```python
+# agent.py - LiveKit voice agent
+import asyncio
+from livekit.agents import JobContext, WorkerOptions, cli
+from livekit.agents.voice import VoicePipeline
+from livekit.plugins import openai, deepgram, elevenlabs
+
+async def entrypoint(ctx: JobContext):
+    await ctx.connect()
+    
+    # Get caller info from room metadata
+    caller = ctx.room.metadata.get('caller', 'unknown')
+    
+    # Create voice pipeline with business logic
+    pipeline = VoicePipeline(
+        stt=deepgram.STT(language="en-US"),
+        llm=openai.LLM(
+            model="gpt-4",
+            temperature=0.7,
+            instructions=f"""
+            You are a customer service agent for TechCorp.
+            The caller's number is {caller}.
+            
+            Be friendly, professional, and helpful.
+            Keep responses under 2 sentences.
+            If asked about pricing, quotes start at $99.
+            For technical issues, collect: name, email, and issue description.
+            """
+        ),
+        tts=elevenlabs.TTS(
+            voice="Rachel",
+            model="eleven_turbo_v2"
+        )
+    )
+    
+    pipeline.start(ctx.room)
+    await asyncio.sleep(600)  # 10 minute max call time
+
+if __name__ == "__main__":
+    cli.run_app(WorkerOptions(entrypoint_fnc=entrypoint))
+```
+
+Deploy this and you have a fully functional AI phone agent in under 100 lines of code!

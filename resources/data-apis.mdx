@@ -1,0 +1,515 @@
+---
+title: Data scraping and search APIs
+description: Tools for crawling websites, searching the web, and creating datasets with real data patterns for your hackathon projects.
+---
+
+Build data-rich applications with these APIs that handle web scraping, search, and research. Perfect for RAG applications, training datasets, and real-time search features.
+
+<CardGroup cols={3}>
+  <Card title="Firecrawl" icon="spider" href="https://www.firecrawl.dev/">
+    Turn entire websites into LLM-ready data
+  </Card>
+  <Card title="Serper.dev" icon="magnifying-glass" href="https://serper.dev/">
+    Lightning-fast Google Search API
+  </Card>
+  <Card title="Parallel.ai" icon="brain" href="https://parallel.ai/">
+    Advanced web research for AI agents
+  </Card>
+</CardGroup>
+
+## Firecrawl
+
+Firecrawl transforms websites into clean, structured data ready for LLMs, RAG applications, or training datasets. It handles JavaScript rendering, pagination, and data extraction automatically.
+
+### Key features
+
+<Tabs>
+  <Tab title="Scrape">
+    Extract single pages in multiple formats:
+    - **Markdown** - Clean, structured text for LLMs
+    - **HTML** - Full page source with styling
+    - **Structured data** - Extracted JSON objects
+    - **Screenshots** - Visual captures of pages
+  </Tab>
+  
+  <Tab title="Crawl">
+    Recursively scrape entire websites:
+    - Follow all internal links automatically
+    - Set depth limits and crawl boundaries
+    - Parallel processing for speed
+    - Progress tracking and resume support
+  </Tab>
+  
+  <Tab title="Map">
+    Get all URLs from a website instantly:
+    - Extremely fast sitemap generation
+    - No content download overhead
+    - Perfect for planning crawl strategy
+    - Respects robots.txt rules
+  </Tab>
+  
+  <Tab title="Extract">
+    AI-powered structured data extraction:
+    - Define schema, get matching JSON
+    - Extract tables, lists, contact info
+    - No CSS selectors needed
+    - Works across page variations
+  </Tab>
+</Tabs>
+
+### Pricing and free tier
+
+<Note>
+  Firecrawl offers a generous free tier for testing. Check their website for current pricing details.
+</Note>
+
+### Quick start
+
+Install the Python SDK:
+
+```bash
+pip install firecrawl-py
+```
+
+### Code examples
+
+<CodeGroup>
+```python Scrape single page
+from firecrawl import Firecrawl
+
+firecrawl = Firecrawl(api_key="fc-YOUR_API_KEY")
+
+# Scrape a website
+doc = firecrawl.scrape("https://example.com", formats=["markdown", "html"])
+print(doc.markdown)
+```
+
+```python Crawl entire site
+from firecrawl import Firecrawl
+
+firecrawl = Firecrawl(api_key="fc-YOUR_API_KEY")
+
+# Crawl entire site
+response = firecrawl.crawl(
+    "https://example.com",
+    limit=100,
+    scrape_options={"formats": ["markdown", "html"]}
+)
+
+# Process all pages
+for page in response:
+    print(f"URL: {page.url}")
+    print(f"Content: {page.markdown[:200]}...")
+```
+
+```python Map all URLs
+from firecrawl import Firecrawl
+
+firecrawl = Firecrawl(api_key="fc-YOUR_API_KEY")
+
+# Get all URLs from a site (extremely fast)
+urls = firecrawl.map("https://example.com")
+
+print(f"Found {len(urls)} pages:")
+for url in urls:
+    print(url)
+```
+
+```python AI extraction
+from firecrawl import Firecrawl
+
+firecrawl = Firecrawl(api_key="fc-YOUR_API_KEY")
+
+# Extract structured data with AI
+schema = {
+    "name": "string",
+    "price": "number",
+    "description": "string"
+}
+
+data = firecrawl.extract(
+    "https://example.com/product",
+    schema=schema
+)
+
+print(data)
+```
+</CodeGroup>
+
+### Use cases
+
+<CardGroup cols={2}>
+  <Card title="RAG applications" icon="database">
+    Create vector databases from documentation sites, knowledge bases, or technical resources.
+  </Card>
+  
+  <Card title="Training datasets" icon="chart-line">
+    Build clean, structured datasets for fine-tuning models or training classifiers.
+  </Card>
+  
+  <Card title="Competitive intelligence" icon="chart-mixed">
+    Monitor competitor websites, pricing changes, or product updates automatically.
+  </Card>
+  
+  <Card title="Content aggregation" icon="layer-group">
+    Collect and organize content from multiple sources into unified datasets.
+  </Card>
+</CardGroup>
+
+<Tip>
+  **Essential for RAG applications** - Firecrawl's markdown output is perfect for creating vector embeddings. Clean data = better retrieval accuracy.
+</Tip>
+
+## Serper.dev
+
+Serper.dev provides lightning-fast Google Search results through a simple API. With 1-2 second response times and generous free credits, it's perfect for adding real-time search to your hackathon app.
+
+### Key features
+
+- **Blazing fast** - 1-2 second response times (industry-leading)
+- **Generous free tier** - 2,500+ free credits for new signups
+- **Cost-effective** - $0.30-$1.00 per 1,000 queries (10x cheaper than alternatives)
+- **Rich results** - Organic results, images, videos, knowledge graphs, places
+- **Structured JSON** - Easy to parse and integrate
+- **No rate limits** - On paid plans (free tier has reasonable limits)
+
+### Pricing
+
+<CardGroup cols={3}>
+  <Card title="Free tier" icon="gift">
+    **2,500+ credits** for new signups. Perfect for hackathons.
+  </Card>
+  
+  <Card title="Standard pricing" icon="dollar-sign">
+    **$0.30-$1.00** per 1,000 queries based on volume.
+  </Card>
+  
+  <Card title="Enterprise" icon="building">
+    Custom pricing for high-volume needs.
+  </Card>
+</CardGroup>
+
+### Response structure
+
+Serper returns structured JSON with:
+
+- **Organic results** - Title, snippet, URL, position
+- **Knowledge graph** - Entity information from Google
+- **People also ask** - Related questions
+- **Images** - Image search results
+- **Videos** - Video results from YouTube and others
+- **Places** - Local business results (for location queries)
+- **Related searches** - Suggested follow-up queries
+
+### Quick start
+
+```bash
+curl -X POST https://google.serper.dev/search \
+  -H 'X-API-KEY: YOUR_API_KEY' \
+  -H 'Content-Type: application/json' \
+  -d '{"q":"hackathon tips"}'
+```
+
+### Code examples
+
+<CodeGroup>
+```python Basic search
+import requests
+import json
+
+url = "https://google.serper.dev/search"
+payload = json.dumps({"q": "latest AI news"})
+headers = {
+    'X-API-KEY': 'YOUR_API_KEY',
+    'Content-Type': 'application/json'
+}
+
+response = requests.post(url, headers=headers, data=payload)
+results = response.json()
+
+# Print top 3 results
+for result in results['organic'][:3]:
+    print(f"Title: {result['title']}")
+    print(f"URL: {result['link']}")
+    print(f"Snippet: {result['snippet']}")
+    print()
+```
+
+```python Image search
+import requests
+import json
+
+url = "https://google.serper.dev/images"
+payload = json.dumps({"q": "mountain landscapes"})
+headers = {
+    'X-API-KEY': 'YOUR_API_KEY',
+    'Content-Type': 'application/json'
+}
+
+response = requests.post(url, headers=headers, data=payload)
+images = response.json()
+
+# Get image URLs
+for img in images['images'][:5]:
+    print(f"Image: {img['imageUrl']}")
+    print(f"Source: {img['link']}")
+```
+
+```python News search
+import requests
+import json
+
+url = "https://google.serper.dev/news"
+payload = json.dumps({
+    "q": "artificial intelligence",
+    "num": 10
+})
+headers = {
+    'X-API-KEY': 'YOUR_API_KEY',
+    'Content-Type': 'application/json'
+}
+
+response = requests.post(url, headers=headers, data=payload)
+news = response.json()
+
+for article in news['news']:
+    print(f"Title: {article['title']}")
+    print(f"Source: {article['source']}")
+    print(f"Date: {article['date']}")
+    print()
+```
+
+```javascript Node.js example
+const axios = require('axios');
+
+const options = {
+  method: 'POST',
+  url: 'https://google.serper.dev/search',
+  headers: {
+    'X-API-KEY': 'YOUR_API_KEY',
+    'Content-Type': 'application/json'
+  },
+  data: {q: 'hackathon projects'}
+};
+
+axios.request(options)
+  .then(response => {
+    console.log(response.data.organic);
+  })
+  .catch(error => {
+    console.error(error);
+  });
+```
+</CodeGroup>
+
+### Use cases
+
+<Accordion title="Real-time search features">
+  Add Google search to chatbots, research tools, or content aggregators without building your own crawler.
+</Accordion>
+
+<Accordion title="SEO and monitoring">
+  Track keyword rankings, monitor search results, or analyze SERP features for competitive intelligence.
+</Accordion>
+
+<Accordion title="AI agent tools">
+  Give LLM agents the ability to search the web for current information beyond their training data.
+</Accordion>
+
+<Accordion title="Content discovery">
+  Find relevant images, videos, or articles programmatically for content curation apps.
+</Accordion>
+
+<Warning>
+  **Generous free tier** - 2,500 credits is enough for the entire hackathon. You won't hit limits mid-demo.
+</Warning>
+
+## Parallel.ai
+
+Parallel.ai provides advanced web research and search APIs specifically designed for AI agents. With 48% multi-hop accuracy compared to GPT-4's 14%, it excels at deep research tasks.
+
+### Key features
+
+- **Deep Research Mode** - Multi-hop reasoning with 48% accuracy (vs GPT-4's 14%)
+- **Multiple agent modes** - Fast, hyper-fast, and comprehensive research options
+- **Scraping & extraction** - Get structured data from any page
+- **SOC 2 Type II certified** - Enterprise-grade security and compliance
+- **Structured JSON outputs** - Easy integration with your applications
+- **Citations included** - All answers include source URLs for verification
+
+### Research modes
+
+<Tabs>
+  <Tab title="Fast mode">
+    Quick research for straightforward queries:
+    - Response time: 5-10 seconds
+    - Single-hop queries
+    - Best for factual lookups
+    - Lower cost per query
+  </Tab>
+  
+  <Tab title="Hyper-fast mode">
+    Instant results for simple queries:
+    - Response time: 1-3 seconds
+    - Direct answers only
+    - Minimal processing
+    - Lowest cost option
+  </Tab>
+  
+  <Tab title="Comprehensive mode">
+    Deep research for complex topics:
+    - Response time: 30-60 seconds
+    - Multi-hop reasoning
+    - Cross-reference verification
+    - Highest accuracy
+  </Tab>
+</Tabs>
+
+### Multi-hop research
+
+Unlike standard search APIs, Parallel.ai can answer questions that require multiple reasoning steps:
+
+<Steps>
+  <Step title="Initial query">
+    User asks: "What programming language was used to build the first version of Twitter?"
+  </Step>
+  
+  <Step title="Research step 1">
+    Agent searches: "Twitter first version programming language"
+  </Step>
+  
+  <Step title="Research step 2">
+    Finds Ruby on Rails, then searches: "Ruby on Rails programming language"
+  </Step>
+  
+  <Step title="Final answer">
+    Returns: "Ruby - Twitter was originally built using Ruby on Rails framework"
+  </Step>
+</Steps>
+
+### When to use what
+
+<CardGroup cols={3}>
+  <Card title="Use Firecrawl for..." icon="spider">
+    - Creating RAG datasets
+    - Scraping documentation
+    - Building training data
+    - Extracting structured info
+  </Card>
+  
+  <Card title="Use Serper for..." icon="magnifying-glass">
+    - Real-time search features
+    - Simple web queries
+    - Image/video search
+    - Cost-effective high volume
+  </Card>
+  
+  <Card title="Use Parallel.ai for..." icon="brain">
+    - Deep research tasks
+    - Multi-hop reasoning
+    - Complex questions
+    - AI agent capabilities
+  </Card>
+</CardGroup>
+
+## Best practices
+
+### For scraping (Firecrawl)
+
+<Warning>
+  **Respect robots.txt and terms of service** - Always check if a website allows scraping. Firecrawl respects these rules automatically.
+</Warning>
+
+1. **Start small** - Test on a few pages before crawling thousands
+2. **Use the Map feature** - Plan your crawl strategy by seeing all URLs first
+3. **Choose the right format** - Markdown for LLMs, HTML for full fidelity, structured data for specific extraction
+4. **Cache results** - Store scraped data locally to avoid re-scraping during development
+5. **Handle errors** - Some pages may fail; implement retry logic with exponential backoff
+
+### For search (Serper/Parallel.ai)
+
+1. **Cache common queries** - Don't waste credits on repeated searches
+2. **Monitor usage** - Track API calls to stay within free tier during hackathon
+3. **Parse structured data** - Both APIs return JSON; extract exactly what you need
+4. **Add citations** - Always credit sources when displaying search results
+5. **Implement fallbacks** - If one API fails, have a backup search method
+
+### Cost optimization
+
+<Tip>
+  **Free tier strategy** - Use Serper's 2,500 free credits for demos and testing. Switch to Parallel.ai only for complex research tasks that justify the higher cost.
+</Tip>
+
+<Accordion title="Development phase">
+  - Use free tiers exclusively
+  - Cache all results locally
+  - Mock API responses for UI development
+  - Only make real API calls when testing functionality
+</Accordion>
+
+<Accordion title="Demo day">
+  - Pre-load common queries
+  - Have cached responses ready
+  - Monitor rate limits closely
+  - Implement graceful fallbacks
+</Accordion>
+
+## Example: Building a research assistant
+
+Combine all three APIs for a powerful research tool:
+
+```python
+from firecrawl import Firecrawl
+import requests
+import json
+
+class ResearchAssistant:
+    def __init__(self, firecrawl_key, serper_key):
+        self.firecrawl = Firecrawl(api_key=firecrawl_key)
+        self.serper_key = serper_key
+    
+    def search_web(self, query):
+        """Search with Serper for fast results"""
+        url = "https://google.serper.dev/search"
+        payload = json.dumps({"q": query, "num": 5})
+        headers = {
+            'X-API-KEY': self.serper_key,
+            'Content-Type': 'application/json'
+        }
+        response = requests.post(url, headers=headers, data=payload)
+        return response.json()['organic']
+    
+    def deep_scrape(self, url):
+        """Get full content from a URL"""
+        doc = self.firecrawl.scrape(url, formats=["markdown"])
+        return doc.markdown
+    
+    def research_topic(self, topic):
+        """Complete research workflow"""
+        # 1. Search for relevant pages
+        print(f"Searching for: {topic}")
+        results = self.search_web(topic)
+        
+        # 2. Scrape top 3 results
+        research_data = []
+        for result in results[:3]:
+            print(f"Scraping: {result['link']}")
+            content = self.deep_scrape(result['link'])
+            research_data.append({
+                'title': result['title'],
+                'url': result['link'],
+                'content': content
+            })
+        
+        return research_data
+
+# Usage
+assistant = ResearchAssistant(
+    firecrawl_key="fc-YOUR_KEY",
+    serper_key="YOUR_SERPER_KEY"
+)
+
+data = assistant.research_topic("machine learning best practices")
+```
+
+This example demonstrates how to combine search (Serper) with scraping (Firecrawl) for comprehensive research automation.

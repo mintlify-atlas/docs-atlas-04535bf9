@@ -1,0 +1,427 @@
+---
+title: Serper.dev search API usage
+description: Add real-time Google search capabilities to your apps using Serper.dev's fast and affordable API
+---
+
+## Overview
+
+Serper.dev provides a simple API for Google Search, including web results, news, and images. This example demonstrates how to integrate real-time search data into your applications, perfect for enriching LLM context or building search-powered features.
+
+<Note>
+This example was tested in real hackathons for real-time data enrichment in applications.
+</Note>
+
+## What you'll build
+
+A Python wrapper class that:
+- Performs Google web searches programmatically
+- Searches news articles and images
+- Extracts clean data for LLM context enrichment
+- Provides structured results with titles, snippets, and URLs
+
+## Prerequisites
+
+Before you start, make sure you have:
+
+<Steps>
+  <Step title="Get a Serper.dev API key">
+    Sign up at [Serper.dev](https://serper.dev) and get your API key. The free tier includes 2,500 searches.
+  </Step>
+  
+  <Step title="Install required packages">
+    ```bash
+    pip install requests
+    ```
+  </Step>
+  
+  <Step title="Set your API key">
+    ```bash
+    export SERPER_API_KEY="your_api_key_here"
+    ```
+  </Step>
+</Steps>
+
+## Complete code
+
+Here's the full implementation with web, news, and image search capabilities:
+
+```python serper-search-api.py
+#!/usr/bin/env python
+"""
+Serper.dev Search API Example
+Personal experience: Used for real-time data enrichment in apps
+"""
+
+import os
+import requests
+import json
+
+class SerperSearch:
+    """Wrapper for Serper.dev Google Search API"""
+    
+    def __init__(self, api_key: str = None):
+        self.api_key = api_key or os.getenv("SERPER_API_KEY")
+        self.base_url = "https://google.serper.dev"
+    
+    def search(self, query: str, num_results: int = 10) -> dict:
+        """
+        Perform Google search
+        
+        Args:
+            query: Search query
+            num_results: Number of results (10-100)
+        
+        Returns:
+            Dict with organic results, knowledge graph, etc.
+        """
+        headers = {
+            "X-API-KEY": self.api_key,
+            "Content-Type": "application/json"
+        }
+        
+        payload = {
+            "q": query,
+            "num": num_results
+        }
+        
+        response = requests.post(
+            f"{self.base_url}/search",
+            headers=headers,
+            json=payload
+        )
+        
+        return response.json()
+    
+    def news_search(self, query: str) -> list:
+        """Search for news articles"""
+        headers = {
+            "X-API-KEY": self.api_key,
+            "Content-Type": "application/json"
+        }
+        
+        response = requests.post(
+            f"{self.base_url}/news",
+            headers=headers,
+            json={"q": query}
+        )
+        
+        return response.json().get("news", [])
+    
+    def image_search(self, query: str) -> list:
+        """Search for images"""
+        headers = {
+            "X-API-KEY": self.api_key,
+            "Content-Type": "application/json"
+        }
+        
+        response = requests.post(
+            f"{self.base_url}/images",
+            headers=headers,
+            json={"q": query}
+        )
+        
+        return response.json().get("images", [])
+
+# Example usage
+if __name__ == "__main__":
+    searcher = SerperSearch()
+    
+    # Regular search
+    results = searcher.search("FastAPI tutorial", num_results=5)
+    
+    print("Top 5 results for 'FastAPI tutorial':\n")
+    for i, result in enumerate(results.get("organic", []), 1):
+        print(f"{i}. {result['title']}")
+        print(f"   {result['link']}")
+        print(f"   {result['snippet']}\n")
+    
+    # News search
+    news = searcher.news_search("AI hackathon 2026")
+    print("\nLatest news on AI hackathons:")
+    for article in news[:3]:
+        print(f"- {article['title']} ({article['source']})")
+    
+    # Use case: Enrich user queries in real-time
+    print("\n--- Use Case: Real-time data enrichment ---")
+    user_query = "latest React trends"
+    search_data = searcher.search(user_query, num_results=3)
+    
+    # Extract just URLs and snippets for LLM context
+    context = "\n".join([
+        f"{r['title']}: {r['snippet']}"
+        for r in search_data.get("organic", [])
+    ])
+    
+    print(f"\nContext for LLM about '{user_query}':")
+    print(context[:300] + "...")
+```
+
+## How it works
+
+<Accordion title="1. Initialize the SerperSearch class">
+The class wraps the Serper.dev API and handles authentication:
+
+```python
+searcher = SerperSearch()
+# Or pass API key directly:
+searcher = SerperSearch(api_key="your_key")
+```
+
+It automatically reads from the `SERPER_API_KEY` environment variable if no key is provided.
+</Accordion>
+
+<Accordion title="2. Perform web searches">
+The `search()` method queries Google and returns structured results:
+
+```python
+results = searcher.search("your query", num_results=10)
+```
+
+The response includes:
+- **`organic`**: List of search results with title, link, snippet
+- **`knowledgeGraph`**: Featured knowledge panel (if available)
+- **`answerBox`**: Direct answer box (if available)
+- **`relatedSearches`**: Related search suggestions
+</Accordion>
+
+<Accordion title="3. Search news and images">
+Specialized methods for different search types:
+
+```python
+# Get latest news articles
+news = searcher.news_search("AI developments")
+
+# Find images
+images = searcher.image_search("python logo")
+```
+
+Each returns a focused list of results for that content type.
+</Accordion>
+
+<Accordion title="4. Enrich LLM context">
+The example shows how to extract clean context for AI applications:
+
+```python
+context = "\n".join([
+    f"{r['title']}: {r['snippet']}"
+    for r in search_data.get("organic", [])
+])
+```
+
+This creates a text summary perfect for providing current information to LLMs.
+</Accordion>
+
+## Usage instructions
+
+<Steps>
+  <Step title="Run the basic example">
+    ```bash
+    python serper-search-api.py
+    ```
+    
+    This will demonstrate web search, news search, and context enrichment.
+  </Step>
+  
+  <Step title="Integrate into your application">
+    Import and use the SerperSearch class:
+    
+    ```python
+    from serper_search_api import SerperSearch
+    
+    searcher = SerperSearch()
+    results = searcher.search("your topic")
+    
+    # Process results
+    for result in results.get("organic", []):
+        print(result['title'], result['link'])
+    ```
+  </Step>
+  
+  <Step title="Customize search parameters">
+    Adjust the number of results and query:
+    
+    ```python
+    # Get more results
+    results = searcher.search("machine learning", num_results=50)
+    
+    # Search specific topics
+    tech_news = searcher.news_search("breakthrough AI")
+    ```
+  </Step>
+</Steps>
+
+## Use cases
+
+<CardGroup cols={2}>
+  <Card title="LLM context enrichment" icon="brain">
+    Provide current information to language models for accurate, up-to-date responses
+  </Card>
+  
+  <Card title="Research automation" icon="flask">
+    Gather information from multiple sources automatically for research projects
+  </Card>
+  
+  <Card title="Content discovery" icon="newspaper">
+    Find trending articles and news for content curation apps
+  </Card>
+  
+  <Card title="Competitive monitoring" icon="chart-mixed">
+    Track mentions and trends related to your product or industry
+  </Card>
+</CardGroup>
+
+## Advanced examples
+
+<CodeGroup>
+```python RAG with real-time data
+from serper_search_api import SerperSearch
+from openai import OpenAI
+
+searcher = SerperSearch()
+client = OpenAI()
+
+def answer_with_search(question: str) -> str:
+    """Answer questions using real-time search data"""
+    
+    # Get current information from search
+    search_results = searcher.search(question, num_results=5)
+    
+    # Build context from search results
+    context = "\n\n".join([
+        f"Source: {r['title']}\n{r['snippet']}"
+        for r in search_results.get("organic", [])
+    ])
+    
+    # Ask LLM with enriched context
+    response = client.chat.completions.create(
+        model="gpt-4",
+        messages=[
+            {"role": "system", "content": f"Use this current information to answer questions:\n{context}"},
+            {"role": "user", "content": question}
+        ]
+    )
+    
+    return response.choices[0].message.content
+
+# Example
+answer = answer_with_search("What are the latest developments in quantum computing?")
+print(answer)
+```
+
+```python News aggregator
+from serper_search_api import SerperSearch
+import json
+from datetime import datetime
+
+searcher = SerperSearch()
+
+def create_news_digest(topics: list) -> dict:
+    """Create a digest of latest news across multiple topics"""
+    
+    digest = {
+        "generated_at": datetime.now().isoformat(),
+        "topics": {}
+    }
+    
+    for topic in topics:
+        news = searcher.news_search(topic)
+        digest["topics"][topic] = [
+            {
+                "title": article["title"],
+                "source": article["source"],
+                "link": article["link"],
+                "date": article.get("date")
+            }
+            for article in news[:5]  # Top 5 per topic
+        ]
+    
+    return digest
+
+# Generate digest
+topics = ["AI developments", "startup funding", "web3 trends"]
+digest = create_news_digest(topics)
+
+# Save to file
+with open("news_digest.json", "w") as f:
+    json.dump(digest, f, indent=2)
+```
+
+```python Image search for datasets
+from serper_search_api import SerperSearch
+import requests
+from pathlib import Path
+
+searcher = SerperSearch()
+
+def download_images(query: str, num_images: int = 10, output_dir: str = "images"):
+    """Download images for dataset creation"""
+    
+    # Search for images
+    images = searcher.image_search(query)
+    
+    # Create output directory
+    Path(output_dir).mkdir(exist_ok=True)
+    
+    # Download images
+    for i, img in enumerate(images[:num_images]):
+        try:
+            response = requests.get(img["imageUrl"], timeout=10)
+            if response.status_code == 200:
+                ext = img["imageUrl"].split(".")[-1].split("?")[0]
+                with open(f"{output_dir}/{query}_{i}.{ext}", "wb") as f:
+                    f.write(response.content)
+                print(f"Downloaded image {i+1}/{num_images}")
+        except Exception as e:
+            print(f"Failed to download image {i}: {e}")
+
+# Example: Build an image dataset
+download_images("golden retriever", num_images=20)
+```
+</CodeGroup>
+
+<Tip>
+**Pro tip**: Cache search results to avoid redundant API calls. Serper.dev charges per search, so implement caching for frequently searched queries.
+</Tip>
+
+<Warning>
+The free tier includes 2,500 searches per month. Monitor your usage in the Serper.dev dashboard to avoid unexpected charges.
+</Warning>
+
+## Response structure
+
+Here's what you get back from a typical search:
+
+```json
+{
+  "searchParameters": {
+    "q": "FastAPI tutorial",
+    "num": 10
+  },
+  "organic": [
+    {
+      "title": "FastAPI - Official Documentation",
+      "link": "https://fastapi.tiangolo.com/",
+      "snippet": "FastAPI framework, high performance, easy to learn...",
+      "position": 1
+    }
+  ],
+  "answerBox": {
+    "snippet": "FastAPI is a modern, fast web framework..."
+  },
+  "knowledgeGraph": {
+    "title": "FastAPI",
+    "type": "Web framework",
+    "description": "..."
+  },
+  "relatedSearches": [
+    {"query": "FastAPI vs Flask"},
+    {"query": "FastAPI tutorial for beginners"}
+  ]
+}
+```
+
+## Next steps
+
+- Check out the [Data & APIs resources](/resources/data-apis) for more tools
+- Explore the [Firecrawl RAG example](/examples/firecrawl-rag) for web scraping
+- Review the [AI & ML resources](/resources/ai-ml) to enhance your search results with AI

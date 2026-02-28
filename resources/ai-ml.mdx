@@ -1,0 +1,707 @@
+---
+title: AI/ML platforms and tools
+description: Integrate AI capabilities without training models from scratch. Pre-trained models, vector databases, and no-code platforms for rapid AI development.
+---
+
+Build intelligent applications with these battle-tested AI/ML platforms. From 45,000+ pre-trained models to vector databases for RAG systems, everything you need to add AI capabilities quickly.
+
+<CardGroup cols={3}>
+  <Card title="Hugging Face" icon="face-smile" href="https://huggingface.co/">
+    45,000+ models through unified API
+  </Card>
+  <Card title="Langflow" icon="diagram-project" href="https://www.langflow.org/">
+    No-code AI agent builder
+  </Card>
+  <Card title="Vector DBs" icon="database">
+    Pinecone (cloud) & ChromaDB (local)
+  </Card>
+</CardGroup>
+
+## Hugging Face
+
+Hugging Face is the home of machine learning, offering 45,000+ pre-trained models from leading AI providers through a unified API. Skip training from scratch and deploy production-ready AI in minutes.
+
+### Key features
+
+- **45,000+ models** - Text, image, video, audio, and 3D modalities
+- **Unified API** - One interface for models from OpenAI, Meta, Google, Anthropic, and more
+- **Inference API** - Run models without managing infrastructure
+- **Free community tier** - Test and prototype at no cost
+- **Paid compute** - GPU instances starting at $0.60/hour
+- **Extensive libraries** - Transformers, Diffusers, Tokenizers, TRL, PEFT
+
+### Supported modalities
+
+<Tabs>
+  <Tab title="Text">
+    - Text classification and sentiment analysis
+    - Named entity recognition (NER)
+    - Question answering systems
+    - Text generation and completion
+    - Translation (100+ languages)
+    - Summarization
+  </Tab>
+  
+  <Tab title="Image">
+    - Image classification
+    - Object detection
+    - Image segmentation
+    - Image generation (Stable Diffusion, DALL-E)
+    - Image-to-text (captioning)
+    - Text-to-image
+  </Tab>
+  
+  <Tab title="Audio">
+    - Speech recognition (ASR)
+    - Text-to-speech (TTS)
+    - Audio classification
+    - Music generation
+    - Voice cloning
+    - Audio separation
+  </Tab>
+  
+  <Tab title="Video">
+    - Video classification
+    - Action recognition
+    - Video generation
+    - Frame extraction
+    - Video captioning
+  </Tab>
+</Tabs>
+
+### Pricing
+
+<CardGroup cols={2}>
+  <Card title="Community (Free)" icon="users">
+    - Free model hosting
+    - Public model inference
+    - Community support
+    - Unlimited public repos
+  </Card>
+  
+  <Card title="Compute" icon="server">
+    - GPU instances from **$0.60/hour**
+    - CPU inference (cheaper)
+    - Auto-scaling available
+    - Pay only for usage
+  </Card>
+</CardGroup>
+
+### Quick start examples
+
+<CodeGroup>
+```python Text classification
+from transformers import pipeline
+
+# Sentiment analysis
+classifier = pipeline("sentiment-analysis")
+result = classifier("I love this hackathon!")
+print(result)
+# [{'label': 'POSITIVE', 'score': 0.9998}]
+
+# Multi-class classification
+classifier = pipeline("text-classification", 
+                     model="distilbert-base-uncased-finetuned-sst-2-english")
+results = classifier(["This is amazing!", "This is terrible."])
+for r in results:
+    print(f"{r['label']}: {r['score']:.4f}")
+```
+
+```python Image generation
+from diffusers import StableDiffusionPipeline
+import torch
+
+# Load Stable Diffusion model
+pipe = StableDiffusionPipeline.from_pretrained(
+    "stabilityai/stable-diffusion-2-1",
+    torch_dtype=torch.float16
+)
+pipe = pipe.to("cuda")
+
+# Generate image
+prompt = "A beautiful sunset over mountains, digital art"
+image = pipe(prompt).images[0]
+image.save("sunset.png")
+```
+
+```python Question answering
+from transformers import pipeline
+
+# QA model
+qa = pipeline("question-answering")
+
+context = """
+Hugging Face is a company that provides tools and models for natural language processing.
+They offer a platform with thousands of pre-trained models.
+"""
+
+question = "What does Hugging Face provide?"
+answer = qa(question=question, context=context)
+
+print(f"Answer: {answer['answer']}")
+print(f"Confidence: {answer['score']:.4f}")
+```
+
+```python Text generation
+from transformers import pipeline
+
+# Text generation
+generator = pipeline("text-generation", model="gpt2")
+
+prompt = "In a world where AI helps developers"
+result = generator(prompt, max_length=50, num_return_sequences=1)
+
+print(result[0]['generated_text'])
+```
+</CodeGroup>
+
+### Use cases
+
+<Accordion title="Chatbots and assistants">
+  Use conversational models like BERT, GPT, or LLaMA for building intelligent chatbots without API costs.
+</Accordion>
+
+<Accordion title="Content moderation">
+  Deploy classification models to detect toxic content, spam, or inappropriate images automatically.
+</Accordion>
+
+<Accordion title="Image generation apps">
+  Integrate Stable Diffusion or DALL-E variants for text-to-image features in creative tools.
+</Accordion>
+
+<Accordion title="Document processing">
+  Use NER and summarization models to extract insights from documents, contracts, or research papers.
+</Accordion>
+
+<Tip>
+  **One-stop shop for ML** - From text classification to image generation, there's a pre-trained model ready to use. Perfect for hackathons where you need results fast.
+</Tip>
+
+## Vector databases for RAG
+
+Vector databases are essential for Retrieval-Augmented Generation (RAG) systems. They store embeddings and enable semantic search to find relevant context for LLM responses.
+
+### Pinecone (Cloud)
+
+Fully managed serverless vector database designed for production RAG systems that need to scale to millions of vectors.
+
+#### Key features
+
+- **Automatic scaling** - No infrastructure management required
+- **Multi-region deployment** - Global apps with low latency
+- **Hybrid search** - Combine sparse and dense vectors
+- **Enterprise compliance** - SOC 2, GDPR certifications
+- **Sub-100ms latency** - Even at massive scale
+- **Built-in metadata filtering** - Combine vector search with traditional filters
+
+#### Pricing
+
+<CardGroup cols={3}>
+  <Card title="Starter" icon="rocket">
+    **Free tier**
+    - Single pod
+    - 100K vectors
+    - Good for testing
+  </Card>
+  
+  <Card title="Standard" icon="chart-line">
+    **$50/month minimum**
+    - Usage-based pricing
+    - Multiple pods
+    - Production workloads
+  </Card>
+  
+  <Card title="Enterprise" icon="building">
+    **$500/month minimum**
+    - SLAs included
+    - Dedicated support
+    - Custom regions
+  </Card>
+</CardGroup>
+
+#### Quick start
+
+<CodeGroup>
+```python Initialize Pinecone
+import pinecone
+from pinecone import Pinecone, ServerlessSpec
+
+# Initialize
+pc = Pinecone(api_key="YOUR_API_KEY")
+
+# Create index
+index = pc.create_index(
+    name="hackathon-rag",
+    dimension=1536,  # OpenAI embedding size
+    metric="cosine",
+    spec=ServerlessSpec(cloud="aws", region="us-east-1")
+)
+
+print("Index created successfully!")
+```
+
+```python Upsert vectors
+# Upsert vectors with metadata
+index.upsert(vectors=[
+    ("doc1", [0.1, 0.2, 0.3, ...], {"text": "First document content", "source": "web"}),
+    ("doc2", [0.3, 0.4, 0.5, ...], {"text": "Second document content", "source": "pdf"}),
+    ("doc3", [0.5, 0.6, 0.7, ...], {"text": "Third document content", "source": "web"})
+])
+
+print(f"Upserted 3 vectors")
+```
+
+```python Query vectors
+# Query for similar vectors
+results = index.query(
+    vector=[0.1, 0.2, 0.3, ...],  # Query embedding
+    top_k=5,
+    include_metadata=True
+)
+
+# Process results
+for match in results['matches']:
+    print(f"ID: {match['id']}")
+    print(f"Score: {match['score']}")
+    print(f"Text: {match['metadata']['text']}")
+    print()
+```
+
+```python Filter with metadata
+# Query with metadata filtering
+results = index.query(
+    vector=[0.1, 0.2, 0.3, ...],
+    top_k=5,
+    filter={"source": "web"},  # Only web sources
+    include_metadata=True
+)
+
+print(f"Found {len(results['matches'])} web sources")
+```
+</CodeGroup>
+
+#### Why use Pinecone
+
+<Note>
+  **Zero DevOps overhead** - Focus on your app, not infrastructure. Pinecone handles scaling, backups, and failover automatically.
+</Note>
+
+- Handles scaling from thousands to billions of vectors
+- Reliable for production with managed backups
+- Perfect for customer-facing apps needing SLAs
+- Automatic optimization and index management
+
+### ChromaDB (Local)
+
+Open-source embedded vector database that runs in-process with your Python application. Perfect for local development and prototyping.
+
+#### Key features
+
+- **Zero setup** - `pip install chromadb` and start coding
+- **In-process** - No separate server, zero network latency
+- **SQLite-based** - Persistent storage to local disk
+- **Built-in embeddings** - OpenAI, Sentence Transformers, and more
+- **Metadata filtering** - Hybrid search capabilities
+- **Works offline** - No internet required after installation
+
+#### Pricing
+
+<Note>
+  ChromaDB is **completely free** when self-hosted. You only pay for embedding API calls (if using OpenAI or similar).
+</Note>
+
+#### Quick start
+
+<CodeGroup>
+```python Initialize ChromaDB
+import chromadb
+from chromadb.utils import embedding_functions
+
+# Initialize client (persistent storage)
+client = chromadb.PersistentClient(path="./chroma_db")
+
+# Create collection with embedding function
+openai_ef = embedding_functions.OpenAIEmbeddingFunction(
+    api_key="YOUR_OPENAI_KEY",
+    model_name="text-embedding-ada-002"
+)
+
+collection = client.get_or_create_collection(
+    name="hackathon_docs",
+    embedding_function=openai_ef
+)
+
+print("Collection ready!")
+```
+
+```python Add documents
+# Add documents (embeddings generated automatically)
+collection.add(
+    documents=[
+        "Hackathons are time-constrained events where developers build projects.",
+        "RAG systems combine retrieval with language models for better answers.",
+        "Vector databases store embeddings for semantic search."
+    ],
+    ids=["doc1", "doc2", "doc3"],
+    metadatas=[
+        {"source": "file1.pdf", "page": 1},
+        {"source": "file2.pdf", "page": 3},
+        {"source": "file3.pdf", "page": 2}
+    ]
+)
+
+print("Documents added and embedded automatically!")
+```
+
+```python Query documents
+# Query (embedding generated automatically for query)
+results = collection.query(
+    query_texts=["What is a RAG system?"],
+    n_results=3,
+    include=["documents", "metadatas", "distances"]
+)
+
+# Process results
+for i, doc in enumerate(results['documents'][0]):
+    print(f"Result {i+1}:")
+    print(f"Document: {doc}")
+    print(f"Distance: {results['distances'][0][i]}")
+    print(f"Source: {results['metadatas'][0][i]['source']}")
+    print()
+```
+
+```python Filter queries
+# Query with metadata filtering
+results = collection.query(
+    query_texts=["vector databases"],
+    n_results=5,
+    where={"source": "file1.pdf"},  # Only from file1.pdf
+    include=["documents", "metadatas"]
+)
+
+for doc in results['documents'][0]:
+    print(doc)
+```
+</CodeGroup>
+
+#### Why use ChromaDB
+
+<Tip>
+  **Perfect for hackathons** - No API keys, accounts, or billing. Install and start building immediately.
+</Tip>
+
+- Works offline (great for testing anywhere)
+- In-process means zero network latency
+- Easy to iterate on embedding strategies
+- Handles up to ~100K vectors comfortably on local machines
+
+### Pinecone vs ChromaDB comparison
+
+| Aspect | ChromaDB | Pinecone |
+|--------|----------|----------|
+| **Setup Time** | Seconds (`pip install`) | Minutes (account signup) |
+| **Local Development** | Native, works offline | Requires internet |
+| **Production Scale** | Manual scaling required | Automatic scaling |
+| **Cost** | Free (self-hosted) | $50+/month |
+| **Latency** | Zero (in-process) | Network round-trip |
+| **Reliability** | DIY backups | Managed SLAs |
+| **Best For** | Prototyping, small apps | Production, scaling |
+
+### When to use what
+
+<CardGroup cols={2}>
+  <Card title="Start with ChromaDB" icon="play">
+    - Hackathons and MVP development
+    - Local testing and iteration
+    - Projects with up to 100K vectors
+    - When you need offline capability
+  </Card>
+  
+  <Card title="Migrate to Pinecone" icon="arrow-right">
+    - Production deployments
+    - Scaling beyond 100K vectors
+    - Need SLAs and reliability
+    - Customer-facing applications
+  </Card>
+</CardGroup>
+
+## Langflow
+
+Langflow is a no-code platform for building AI agents and RAG applications visually. Turn complex LLM workflows into API endpoints without writing boilerplate code.
+
+### Key features
+
+- **Visual drag-and-drop** - Build workflows with a flowchart interface
+- **Python-based** - Agnostic to any model, API, or database
+- **Instant API deployment** - Turn your flow into an endpoint with one click
+- **Pre-built components** - Agents, RAG, vector stores, tools, chains
+- **Multi-agent orchestration** - Coordinate multiple AI agents
+- **Free cloud service** - Get started in minutes without local setup
+
+### Architecture
+
+<Steps>
+  <Step title="Build flow visually">
+    Drag and drop components like LLMs, vector stores, and tools into a canvas.
+  </Step>
+  
+  <Step title="Configure components">
+    Set API keys, model parameters, and logic for each component.
+  </Step>
+  
+  <Step title="Test in playground">
+    Run your flow with step-by-step debugging and real-time output.
+  </Step>
+  
+  <Step title="Deploy as API">
+    One-click deployment generates an API endpoint.
+  </Step>
+  
+  <Step title="Call from your app">
+    Integrate the API into your frontend or backend application.
+  </Step>
+</Steps>
+
+### Available components
+
+<Tabs>
+  <Tab title="LLMs">
+    - OpenAI (GPT-3.5, GPT-4)
+    - Anthropic (Claude)
+    - Google (Gemini, PaLM)
+    - Hugging Face models
+    - Local LLMs (Ollama, LM Studio)
+  </Tab>
+  
+  <Tab title="Vector Stores">
+    - Pinecone
+    - ChromaDB
+    - Weaviate
+    - Qdrant
+    - FAISS
+  </Tab>
+  
+  <Tab title="Tools">
+    - Web search (Google, Serper)
+    - Web scraping
+    - Python code execution
+    - API calls
+    - Custom tools
+  </Tab>
+  
+  <Tab title="Chains">
+    - RAG chains
+    - Sequential chains
+    - Router chains
+    - Conversation chains
+    - Custom chains
+  </Tab>
+</Tabs>
+
+### API usage example
+
+Once you deploy a Langflow, call it from any application:
+
+<CodeGroup>
+```python Python
+import requests
+
+response = requests.post(
+    "https://your-langflow-api.com/run",
+    json={
+        "input": "What are the best practices for RAG systems?",
+        "tweaks": {}  # Optional parameter overrides
+    }
+)
+
+result = response.json()
+print(result["output"])
+```
+
+```javascript JavaScript
+const response = await fetch('https://your-langflow-api.com/run', {
+  method: 'POST',
+  headers: {'Content-Type': 'application/json'},
+  body: JSON.stringify({
+    input: 'What are the best practices for RAG systems?',
+    tweaks: {}
+  })
+});
+
+const result = await response.json();
+console.log(result.output);
+```
+
+```bash cURL
+curl -X POST https://your-langflow-api.com/run \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "input": "What are the best practices for RAG systems?",
+    "tweaks": {}
+  }'
+```
+</CodeGroup>
+
+### Use cases
+
+<Accordion title="RAG applications">
+  Build document Q&A systems by connecting vector stores with LLMs visually. No code needed for the retrieval pipeline.
+</Accordion>
+
+<Accordion title="Multi-agent systems">
+  Coordinate specialized agents (research, writing, coding) to handle complex tasks through conversation.
+</Accordion>
+
+<Accordion title="Chatbots with tools">
+  Give chatbots abilities like web search, code execution, or API calls without writing tool integration code.
+</Accordion>
+
+<Accordion title="Rapid prototyping">
+  Test different LLMs, prompts, and architectures quickly without refactoring code.
+</Accordion>
+
+<Warning>
+  **Focus on logic, not infrastructure** - Langflow handles all the boilerplate. Perfect when you want to focus on AI behavior during hackathons.
+</Warning>
+
+## When to use what
+
+<CardGroup cols={2}>
+  <Card title="Hugging Face" icon="face-smile">
+    - Need specific pre-trained models
+    - Fine-tuning requirements
+    - Text, image, audio, or video processing
+    - Want to avoid vendor lock-in
+  </Card>
+  
+  <Card title="ChromaDB" icon="database">
+    - Local RAG development
+    - Small-scale production (up to 100K vectors)
+    - Offline capability needed
+    - Zero-cost prototyping
+  </Card>
+  
+  <Card title="Pinecone" icon="database">
+    - Production RAG at scale
+    - Millions+ vectors
+    - Need SLAs and reliability
+    - Multi-region deployments
+  </Card>
+  
+  <Card title="Langflow" icon="diagram-project">
+    - Building agent workflows
+    - No-code rapid prototyping
+    - Multi-agent orchestration
+    - API deployment speed
+  </Card>
+</CardGroup>
+
+## Best practices
+
+### Model selection
+
+<Tip>
+  **Start small, scale up** - Begin with smaller models during development (faster, cheaper), then upgrade to larger models only when needed.
+</Tip>
+
+1. **Text tasks**: Start with DistilBERT or BERT-base before jumping to GPT-4
+2. **Image generation**: Use Stable Diffusion 2.1 (free) before DALL-E 3 (paid)
+3. **Embeddings**: OpenAI ada-002 is reliable, but Sentence Transformers are free
+
+### RAG system tips
+
+<Steps>
+  <Step title="Chunk documents properly">
+    Split text into 500-1000 token chunks with 10-20% overlap for context.
+  </Step>
+  
+  <Step title="Choose good embeddings">
+    OpenAI ada-002 (paid) or all-MiniLM-L6-v2 (free) are solid choices.
+  </Step>
+  
+  <Step title="Test retrieval quality">
+    Manually verify that queries return relevant chunks before connecting to LLM.
+  </Step>
+  
+  <Step title="Optimize prompts">
+    Include clear instructions: "Answer based only on the context provided."
+  </Step>
+  
+  <Step title="Cache embeddings">
+    Generate embeddings once and store them. Don't re-embed the same text.
+  </Step>
+</Steps>
+
+### Cost optimization
+
+<Warning>
+  **Watch your embedding costs** - Embedding thousands of documents with OpenAI can get expensive. Consider free alternatives like Sentence Transformers for hackathons.
+</Warning>
+
+1. **Use ChromaDB for development** - Free, no API costs
+2. **Batch embedding calls** - Process multiple texts in one API request
+3. **Cache everything** - Store embeddings, search results, and LLM responses
+4. **Set usage limits** - Implement hard limits on API calls during demos
+5. **Monitor spending** - Track costs daily during hackathons
+
+## Example: Complete RAG system
+
+Combine ChromaDB with Hugging Face for a free RAG system:
+
+```python
+import chromadb
+from chromadb.utils import embedding_functions
+from transformers import pipeline
+
+# Initialize ChromaDB with free embeddings
+sentence_transformer_ef = embedding_functions.SentenceTransformerEmbeddingFunction(
+    model_name="all-MiniLM-L6-v2"
+)
+
+client = chromadb.PersistentClient(path="./rag_db")
+collection = client.get_or_create_collection(
+    name="knowledge_base",
+    embedding_function=sentence_transformer_ef
+)
+
+# Add documents
+docs = [
+    "RAG systems combine retrieval with generation for better LLM responses.",
+    "Vector databases store embeddings for semantic similarity search.",
+    "ChromaDB is a free, open-source vector database perfect for prototyping."
+]
+
+collection.add(
+    documents=docs,
+    ids=[f"doc{i}" for i in range(len(docs))]
+)
+
+# Initialize QA model from Hugging Face (free)
+qa_model = pipeline("question-answering", model="distilbert-base-cased-distilled-squad")
+
+def rag_query(question):
+    # Retrieve relevant context
+    results = collection.query(
+        query_texts=[question],
+        n_results=2
+    )
+    
+    context = " ".join(results['documents'][0])
+    
+    # Generate answer
+    answer = qa_model(question=question, context=context)
+    
+    return {
+        'answer': answer['answer'],
+        'confidence': answer['score'],
+        'sources': results['documents'][0]
+    }
+
+# Test the RAG system
+result = rag_query("What is ChromaDB?")
+print(f"Answer: {result['answer']}")
+print(f"Confidence: {result['confidence']:.2%}")
+print(f"Sources: {result['sources']}")
+```
+
+This complete example uses only free tools - perfect for hackathons where budget is zero!
