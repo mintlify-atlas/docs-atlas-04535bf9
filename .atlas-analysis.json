@@ -1,0 +1,75 @@
+{
+  "projectType": "general",
+  "projectName": "Hackathon Resources",
+  "projectDescription": "Curated hackathon toolkit from personal projects + faculty resources. Skip setup, focus on innovation.",
+  "theme": "almond",
+  "primaryColor": "#FF6B35",
+  "lightColor": "#FFB84D",
+  "darkColor": "#D94A1A",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": [
+              "introduction",
+              "quick-reference"
+            ]
+          },
+          {
+            "group": "Resources",
+            "pages": [
+              "resources/frontend",
+              "resources/data-apis",
+              "resources/ai-ml",
+              "resources/voice-comms",
+              "resources/deployment"
+            ]
+          },
+          {
+            "group": "Examples",
+            "pages": [
+              "examples/firecrawl-rag",
+              "examples/serper-search",
+              "examples/voice-agent"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Community",
+        "groups": [
+          {
+            "group": "Contribute",
+            "pages": [
+              "contributing",
+              "focus-areas"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "110+ animated React components (React Bits & Aceternity UI)",
+    "Web scraping and search APIs (Firecrawl, Serper, Parallel.ai)",
+    "AI/ML platforms with free tiers (Hugging Face, Langflow)",
+    "Real-time voice AI framework (LiveKit + Twilio)",
+    "Free cloud credits ($250-300 Vultr, $15 Twilio)",
+    "Vector databases for RAG (ChromaDB local, Pinecone cloud)",
+    "Ready-to-use code examples and templates"
+  ],
+  "publicApiSurface": [
+    "Firecrawl scraping/crawling API",
+    "Serper.dev Google Search API",
+    "Parallel.ai research API",
+    "LiveKit real-time voice pipeline",
+    "Twilio voice/SMS API",
+    "Hugging Face Inference API",
+    "Langflow workflow API",
+    "ChromaDB vector operations",
+    "Pinecone vector database API"
+  ]
+}
